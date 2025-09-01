@@ -105,9 +105,7 @@
                  {{ $product->promo_label }}
              </span>
              @endif
-             <a href="#" class="position-absolute top-50 end-0 translate-middle-y me-2 btn btn-light btn-sm rounded-circle shadow">
-                 <i class="far fa-heart"></i>
-             </a>
+
          </div>
 
                      <div class="card-body text-left d-flex flex-column">
