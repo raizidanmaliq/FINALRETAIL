@@ -17,7 +17,6 @@ class CheckoutController extends Controller
 {
     /**
      * Tampilkan halaman pembayaran dengan item yang dipilih.
-     * METHOD INI HARUS DIAKSES VIA POST
      */
     public function prepare(Request $request)
     {
@@ -51,20 +50,17 @@ class CheckoutController extends Controller
 
     /**
      * Proses pembayaran dan buat pesanan.
-     * METHOD INI HARUS DIAKSES VIA POST
      */
     public function process(Request $request)
     {
-        // Validasi input: hapus COD
+        // Validasi input
         $request->validate([
             'cart_ids' => 'required|array|min:1',
             'cart_ids.*' => 'exists:carts,id',
             'shipping_address' => 'required|string|max:500',
-            // Metode pembayaran hanya Bank Transfer dan E-Wallet
             'payment_method' => 'required|string|in:bank_transfer,ewallet',
             'payer_name' => 'required|string|max:100',
             'payment_date' => 'required|date|before_or_equal:today',
-            // Bukti pembayaran selalu wajib
             'proof_of_payment' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -91,18 +87,13 @@ class CheckoutController extends Controller
 
             // Simpan bukti pembayaran ke path yang diinginkan
             $storagePath = 'back_assets/img/cms/payments/';
-
-            // Menggunakan method move() untuk memindahkan file
             $proofPath = $request->file('proof_of_payment')->move(
                 public_path($storagePath),
                 $request->file('proof_of_payment')->hashName()
             );
-
-            // Path yang akan disimpan di database
             $databasePath = $storagePath . basename($proofPath);
 
             // 1. Buat order baru
-            // Hapus payment_status
             $order = Order::create([
                 'customer_id' => $customer->id,
                 'order_code' => 'ORD-' . time() . '-' . Str::upper(Str::random(5)),
@@ -123,14 +114,13 @@ class CheckoutController extends Controller
             }
 
             // 3. Buat record payment
-            // Hapus status
             $paymentData = [
                 'order_id' => $order->id,
                 'amount' => $totalPrice,
                 'payment_method' => $request->payment_method,
                 'payer_name' => $request->payer_name,
                 'payment_date' => $request->payment_date,
-                'proof' => $databasePath, // Nama atribut diubah menjadi 'proof'
+                'proof' => $databasePath,
             ];
 
             Payment::create($paymentData);
@@ -140,9 +130,24 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            // Redirect ke halaman orders dengan pesan sukses
-            return redirect()->route('customer.orders.index')
-                                 ->with('success', 'Pesanan berhasil dibuat! Menunggu verifikasi pembayaran.');
+            // ✅ Bagian yang diubah untuk mengirim ke WhatsApp
+            // Ganti dengan nomor WhatsApp Anda (format internasional tanpa '+')
+            $whatsappNumber = '6285323227747';
+
+            // Bangun pesan untuk WhatsApp dengan format URL
+            $message = "Halo, saya *{$customer->name}* (%2A{$customer->phone}%2A).%0A%0ASaya telah melakukan pemesanan di website dengan detail:%0A%0A*Kode Pesanan:* {$order->order_code}%0A*Total Pembayaran:* Rp " . number_format($totalPrice, 0, ',', '.') . "%0A%0A*Detail Produk:*%0A";
+
+            foreach ($cartItems as $item) {
+                $message .= "- {$item->product->name} ({$item->quantity} pcs) - Rp " . number_format($item->price_snapshot * $item->quantity, 0, ',', '.') . "%0A";
+            }
+
+            $message .= "%0A*Alamat Pengiriman:*%0A{$request->shipping_address}%0A%0ASaya sudah mengunggah bukti pembayaran dan sedang menunggu konfirmasi. Terima kasih.";
+
+            // Buat tautan WhatsApp
+            $whatsappLink = "https://wa.me/{$whatsappNumber}?text={$message}";
+
+            // Redirect pengguna ke tautan WhatsApp
+            return redirect()->away($whatsappLink);
 
         } catch (\Exception $e) {
             DB::rollBack();
