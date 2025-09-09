@@ -7,7 +7,6 @@ use App\Models\Inventory\Product;
 use App\Services\Cms\CatalogService;
 use App\Http\Requests\Cms\ManageProductRequest;
 use Illuminate\Http\Request;
-use App\Helpers\ImageHelpers; // Ditambahkan: Walaupun tidak digunakan, ini untuk konsistensi.
 
 class CatalogController extends Controller
 {
@@ -43,7 +42,7 @@ class CatalogController extends Controller
      *
      * @param  \App\Http\Requests\Cms\ManageProductRequest  $request
      * @param  \App\Models\Inventory\Product  $product
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function toggleDisplay(ManageProductRequest $request, Product $product)
     {
@@ -52,6 +51,8 @@ class CatalogController extends Controller
 
         $this->cmsCatalogService->updateDisplayStatus($product, $isDisplayed);
 
-        return response()->json(['message' => 'Status produk berhasil diperbarui.'], 200);
+        return redirect()
+            ->route('admin.cms.catalog.index')
+            ->with('success', 'Status produk berhasil diperbarui.');
     }
 }

@@ -87,7 +87,7 @@
 
     {{-- Grafik Pergerakan Stok --}}
     <div class="card shadow-sm">
-        <div class="card-header text-white" style="background-color: #9B4141;"> 
+        <div class="card-header bg-primary text-white">
             <h3 class="card-title">Grafik Pergerakan Stok 7 Hari Terakhir</h3>
         </div>
         <div class="card-body">
@@ -97,13 +97,18 @@
 
     {{-- Shortcut Tambah Produk & Stock Opname --}}
     <div class="d-flex justify-content-end mt-3">
-        <a href="{{ route('admin.inventory.products.create') }}" class="btn btn-primary btn-lg mr-2" style="background-color: #9B4141;">
-            <i class="fa fa-plus"></i> Tambah Produk Baru
-        </a>
-        <a href="{{ route('admin.inventory.opname.index') }}" class="btn btn-warning btn-lg" style="background-color: #FBF3F3; border-color: #9B4141;">
-            <i class="fa fa-edit"></i> Stock Opname
-        </a>
-    </div>
+    <a href="{{ route('admin.inventory.products.create') }}"
+       class="btn btn-danger mr-2"
+       style="background-color: #9B4141; border-color: #9B4141; color: #fff;">
+        <i class="fa fa-plus"></i> Tambah Produk Baru
+    </a>
+    <a href="{{ route('admin.inventory.opname.index') }}"
+       class="btn btn-outline-danger"
+       style="border-color: #9B4141; color: #9B4141; background-color: #FBF3F3;">
+        <i class="fa fa-edit"></i> Stock Opname
+    </a>
+</div>
+
 
 </div>
 @endsection

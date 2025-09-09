@@ -27,6 +27,8 @@ class UpdateTestimonialRequest extends FormRequest
             'customer_name' => 'required|string|max:255',
             'review' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
+            'order_date' => 'nullable|date', // Tambahkan ini
+        'product_name' => 'nullable|string|max:255',
         ];
 
         if ($this->isMethod('post')) {

@@ -30,10 +30,7 @@
                             <input type="text" name="title" class="form-control">
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label for="link">Link Tujuan (Opsional)</label>
-                            <input type="url" name="link" class="form-control" placeholder="Contoh: https://contoh.com/promo">
-                        </div>
+
 
                         <div class="form-group col-md-6">
                             <label for="image">Gambar Banner</label>
@@ -54,7 +51,7 @@
                 <div class="card-footer">
                     <button type="submit" class="btn btn-success float-right" style="background-color: #9B4141;>
                         <i class="la la-check-square-o"></i> Simpan
-                    </button>   
+                    </button>
                 </div>
             </div>
         </form>

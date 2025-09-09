@@ -21,26 +21,35 @@
 @section('content')
 <section class="card">
     <article class="card-header">
-        <div class="row">
-            <div class="col-md-4">
-                <label for="filter_stock" class="font-weight-bold">Filter Stok:</label>
-                <select id="filter_stock" class="form-control">
-                    <option value="">Semua</option>
-                    <option value="low_stock">Stok Menipis</option>
-                    <option value="out_of_stock">Stok Habis</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="filter_category" class="font-weight-bold">Filter Kategori:</label>
-                <select id="filter_category" class="form-control">
-                    <option value="">Semua Kategori</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="filter_stock" class="font-weight-bold">Filter Stok:</label>
+            <select id="filter_stock" class="form-control">
+                <option value="">Semua</option>
+                <option value="low_stock">Stok Menipis</option>
+                <option value="out_of_stock">Stok Habis</option>
+            </select>
         </div>
-    </article>
+        <div class="col-md-4">
+            <label for="filter_category" class="font-weight-bold">Filter Kategori:</label>
+            <select id="filter_category" class="form-control">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-4 text-right">
+    <a href="{{ route('admin.inventory.products.create') }}"
+       class="btn btn-danger mt-4"
+       style="background-color: #9B4141; border-color: #9B4141;">
+        <i class="fas fa-plus"></i> Tambah Produk
+    </a>
+</div>
+
+    </div>
+</article>
+
 
     <article class="card-body">
         <table class="table table-striped table-bordered" id="datatable">
@@ -171,6 +180,19 @@
             datatable.ajax.reload();
         });
 
+        // Toast config biar sama kaya edit
+        function showToast(type, message) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+
         // Add Stock Modal Logic
         $('#datatable').on('click', '.btn-add-stock', function() {
             const data = datatable.row($(this).parents('tr')).data();
@@ -190,15 +212,15 @@
                 success: function(response) {
                     $('#addStockModal').modal('hide');
                     datatable.ajax.reload();
-                    toastr.success(response.message || 'Stok berhasil ditambahkan.');
+                    showToast('success', response.message || 'Stok berhasil ditambahkan.');
                 },
                 error: function(response) {
                     let errors = response.responseJSON.errors;
                     let errorMessage = 'Gagal menambahkan stok.';
                     if (errors) {
-                        errorMessage += '<br>' + Object.values(errors).join('<br>');
+                        errorMessage += ' ' + Object.values(errors).join(', ');
                     }
-                    toastr.error(errorMessage);
+                    showToast('error', errorMessage);
                     console.error(response);
                 }
             });
@@ -223,15 +245,15 @@
                 success: function(response) {
                     $('#correctStockModal').modal('hide');
                     datatable.ajax.reload();
-                    toastr.success(response.message || 'Stok berhasil dikoreksi.');
+                    showToast('success', response.message || 'Stok berhasil dikoreksi.');
                 },
                 error: function(response) {
                     let errors = response.responseJSON.errors;
                     let errorMessage = 'Gagal mengoreksi stok.';
                     if (errors) {
-                        errorMessage += '<br>' + Object.values(errors).join('<br>');
+                        errorMessage += ' ' + Object.values(errors).join(', ');
                     }
-                    toastr.error(errorMessage);
+                    showToast('error', errorMessage);
                     console.error(response);
                 }
             });

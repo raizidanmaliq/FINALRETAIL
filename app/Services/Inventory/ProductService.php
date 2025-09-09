@@ -3,14 +3,24 @@
 namespace App\Services\Inventory;
 
 use App\Models\Inventory\Product;
-use App\Models\Inventory\StockMutation;
+use App\Models\Inventory\ProductVariant;
+use App\Models\Inventory\ProductImage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\ErrorHandling;
+use App\Helpers\ImageHelpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class ProductService
 {
     protected $lowStockThreshold = 10;
+    protected ImageHelpers $imageHelper;
+
+    public function __construct()
+    {
+        $this->imageHelper = new ImageHelpers('back_assets/img/products/');
+    }
 
     public function data(Request $request)
     {
@@ -28,17 +38,10 @@ class ProductService
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('cost_price', function ($product) {
-                return 'Rp' . number_format($product->cost_price, 0, ',', '.');
-            })
-            ->addColumn('selling_price', function ($product) {
-                return 'Rp' . number_format($product->selling_price, 0, ',', '.');
-            })
-            ->addColumn('status', function ($product) {
-                $status = $product->status == 'active' ? 'Aktif' : 'Tidak Aktif';
-                $badgeClass = $product->status == 'active' ? 'bg-success' : 'bg-danger';
-                return '<span class="badge ' . $badgeClass . '">' . $status . '</span>';
-            })
+            ->addColumn('cost_price', fn($product) => 'Rp' . number_format($product->cost_price, 0, ',', '.'))
+            ->addColumn('selling_price', fn($product) => 'Rp' . number_format($product->selling_price, 0, ',', '.'))
+            ->addColumn('gender', fn($product) => $product->gender ?? '-')
+            ->addColumn('variants_count', fn($product) => $product->variants()->count())
             ->addColumn('actions', function ($product) {
                 return '
                     <div class="btn-group">
@@ -52,16 +55,77 @@ class ProductService
             ->make(true);
     }
 
-    public function updateProductMasterData($request, Product $product)
+    public function updateProduct($request, Product $product): ?Product
     {
         try {
-            $data = $request->validated();
-            $product->update($data);
+            return DB::transaction(function () use ($request, $product) {
+                $data = $request->validated();
 
-            return $product;
-        } catch (\Exception $e) {
+                // Update master produk
+                $product->update([
+                    'name'            => $data['name'],
+                    'sku'             => $data['sku'],
+                    'category_id'     => $data['category_id'],
+                    'unit'            => $data['unit'],
+                    'cost_price'      => $data['cost_price'],
+                    'selling_price'   => $data['selling_price'],
+                    'description'     => $data['description'],
+                    'promo_label'     => $data['promo_label'] ?? null,
+                    'gender'          => $data['gender'],
+                    'size_details'    => $data['size_details'] ?? null,
+                ]);
+
+                // Update size chart image kalau ada upload baru
+                if ($request->hasFile('size_chart_image')) {
+                    $uploadedPath = $this->imageHelper->uploadFile($request->file('size_chart_image'));
+                    if ($uploadedPath) {
+                        $product->update([
+                            'size_chart_image' => str_replace(public_path(), '', $uploadedPath),
+                        ]);
+                    }
+                }
+
+                // Reset dan simpan ulang varian
+                $product->variants()->delete();
+                foreach ($data['colors'] as $color) {
+                    foreach ($data['sizes'] as $size) {
+                        ProductVariant::create([
+                            'product_id' => $product->id,
+                            'color'      => $color,
+                            'size'       => $size,
+                        ]);
+                    }
+                }
+
+                // Hapus gambar lama yang ditandai
+                if (isset($data['deleted_images'])) {
+                    foreach ($data['deleted_images'] as $imageId) {
+                        $image = ProductImage::find($imageId);
+                        if ($image) {
+                            $this->imageHelper->deleteImage(public_path($image->image_path));
+                            $image->delete();
+                        }
+                    }
+                }
+
+                // Tambah gambar baru
+                if ($request->hasFile('images')) {
+                    foreach ($request->file('images') as $imageFile) {
+                        $uploadedPath = $this->imageHelper->uploadFile($imageFile);
+                        if ($uploadedPath) {
+                            ProductImage::create([
+                                'product_id' => $product->id,
+                                'image_path' => str_replace(public_path(), '', $uploadedPath),
+                            ]);
+                        }
+                    }
+                }
+
+                return $product;
+            });
+        } catch (Exception $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
-            return false;
+            return null;
         }
     }
 }

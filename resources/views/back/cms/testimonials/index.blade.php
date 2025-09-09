@@ -30,6 +30,8 @@
                 <tr>
                     <th>No.</th>
                     <th>Nama Pelanggan</th>
+                    <th>Tanggal Pemesanan</th>
+                    <th>Nama Produk</th>
                     <th>Ulasan</th>
                     <th>Rating</th>
                     <th>Foto</th>
@@ -61,6 +63,8 @@
             columns: [
                 { data: 'id', name: 'id', className: "text-center align-middle"},
                 { data: 'customer_name', name: 'customer_name', className: "align-middle" },
+                { data: 'order_date', name: 'order_date', className: "align-middle" },
+                { data: 'product_name', name: 'product_name', className: "align-middle" },
                 { data: 'review', name: 'review', className: "align-middle" },
                 { data: 'rating', name: 'rating', className: "text-center align-middle" },
                 { data: 'customer_photo', name: 'customer_photo', className: "text-center align-middle", sortable: false, searchable: false },

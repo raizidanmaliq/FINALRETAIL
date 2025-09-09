@@ -1,5 +1,4 @@
-@extends('layouts.common.no-footer') {{-- Menggunakan layout tanpa footer --}}
-
+@extends('layouts.common.app')
 @section('content')
 <div class="container my-5">
     <div class="row">
@@ -12,3 +11,4 @@
     </div>
 </div>
 @endsection
+

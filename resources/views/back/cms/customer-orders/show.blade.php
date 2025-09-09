@@ -1,4 +1,4 @@
-@extends('layouts.customer.app')
+@extends('layouts.admin.app')
 
 @section('header')
 <header class="container-fluid">
@@ -17,47 +17,55 @@
 @endsection
 
 @section('content')
-<section class="card">
+<section class="card shadow mb-4 mt-3" style="border-color: #A34A4A;">
     <div class="card-body">
         <div class="row">
-            <!-- Informasi Umum -->
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-user text-primary"></i> Informasi Umum</h3>
+                <div class="card shadow-sm" style="border-color: #A34A4A;">
+                    <div class="card-header text-white" style="background-color: #A34A4A;">
+                        <h3 class="card-title"><i class="fas fa-truck"></i> Informasi Pengiriman</h3>
                     </div>
                     <div class="card-body">
-                        <p><strong>Pelanggan:</strong> {{ $order->customer->name }}</p>
-                        <p><strong>Email:</strong> {{ $order->customer->email }}</p>
+                        <p><strong>Kode Pesanan:</strong> {{ $order->order_code }}</p>
+                        <p><strong>Status:</strong>
+                            <span class="badge px-2 py-1 text-uppercase
+                                @if($order->order_status == 'pending') bg-warning
+                                @elseif($order->order_status == 'processing') bg-info
+                                @elseif($order->order_status == 'shipped') bg-primary
+                                @elseif($order->order_status == 'completed') bg-success
+                                @else bg-danger
+                                @endif">
+                                {{ ucfirst($order->order_status) }}
+                            </span>
+                        </p>
+                        <p><strong>Nama Pelanggan:</strong> {{ $order->customer->name ?? 'N/A' }}</p>
+                        <hr>
+                        <p><strong>Nama Penerima:</strong> {{ $order->receiver_name }}</p>
+                        <p><strong>Telepon Penerima:</strong> {{ $order->receiver_phone }}</p>
+                        <p><strong>Email Penerima:</strong> {{ $order->receiver_email }}</p>
+                        <p><strong>Alamat Pengiriman:</strong><br> {{ $order->receiver_address }}</p>
                         <p><strong>Tanggal Pesan:</strong> {{ $order->created_at->format('d M Y H:i') }}</p>
-                        <p><strong>Alamat Pengiriman:</strong><br> {{ $order->shipping_address }}</p>
-
-                        @if ($order->verified_by && $order->verified_at)
-                            <p><strong>Diverifikasi oleh:</strong> {{ $order->admin->name ?? 'Admin' }}</p>
-                            <p><strong>Tanggal Verifikasi:</strong> {{ \Carbon\Carbon::parse($order->verified_at)->format('d M Y H:i') }}</p>
-                        @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Informasi Pembayaran -->
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm border-success">
-                    <div class="card-header bg-success text-white">
+                <div class="card shadow-sm" style="border-color: #A34A4A;">
+                    <div class="card-header text-white" style="background-color: #A34A4A;">
                         <h3 class="card-title"><i class="fas fa-credit-card"></i> Informasi Pembayaran</h3>
                     </div>
                     <div class="card-body">
                         @if($order->payment)
                             <p><strong>Metode:</strong> {{ Str::title(str_replace('_', ' ', $order->payment->payment_method)) }}</p>
                             <p><strong>Jumlah:</strong> <span class="text-success fw-bold">Rp {{ number_format($order->payment->amount, 0, ',', '.') }}</span></p>
-                            <p><strong>Atas Nama:</strong> {{ $order->payment->payer_name }}</p>
+
                             <p><strong>Tanggal Bayar:</strong> {{ \Carbon\Carbon::parse($order->payment->payment_date)->format('d M Y') }}</p>
 
                             @if($order->payment->proof)
                                 <p><strong>Bukti:</strong>
-                                    <a href="#" class="btn btn-sm btn-outline-info ms-2" data-toggle="modal" data-target="#proofModal">
-    <i class="fas fa-eye"></i> Lihat Bukti
-</a>
+                                    <a href="#" class="btn btn-sm text-white" style="background-color: #A34A4A;" data-toggle="modal" data-target="#proofModal">
+                                        <i class="fas fa-eye"></i> Lihat Bukti
+                                    </a>
                                 </p>
                             @else
                                 <p class="text-danger"><i class="fas fa-times-circle"></i> Belum ada bukti pembayaran.</p>
@@ -70,17 +78,18 @@
             </div>
         </div>
 
-        <!-- Produk Dipesan -->
-        <div class="card mt-3">
-            <div class="card-header">
+        <div class="card mt-3" style="border-color: #A34A4A;">
+            <div class="card-header text-white" style="background-color: #A34A4A;">
                 <h3 class="card-title"><i class="fas fa-box"></i> Produk Dipesan</h3>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle mb-0">
-                        <thead class="table-light">
+                        <thead class="table-light"> {{-- Perubahan di sini, menggunakan class table-light --}}
                             <tr>
                                 <th>Produk</th>
+                                <th>Warna</th>
+                                <th>Ukuran</th>
                                 <th class="text-center">Qty</th>
                                 <th class="text-end">Harga Satuan</th>
                                 <th class="text-end">Subtotal</th>
@@ -90,6 +99,8 @@
                             @foreach($order->items as $item)
                             <tr>
                                 <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->color ?? '-' }}</td>
+                                <td>{{ $item->size ?? '-' }}</td>
                                 <td class="text-center">{{ $item->quantity }}</td>
                                 <td class="text-end">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
@@ -98,7 +109,7 @@
                         </tbody>
                         <tfoot>
                             <tr class="table-light">
-                                <td colspan="3" class="text-end fw-bold">Total Keseluruhan:</td>
+                                <td colspan="5" class="text-end fw-bold">Total Keseluruhan:</td>
                                 <td class="text-end fw-bold text-success">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                             </tr>
                         </tfoot>
@@ -106,28 +117,13 @@
                 </div>
             </div>
         </div>
-
-        <!-- Status Pesanan -->
-        <div class="mt-3">
-            <span class="badge px-3 py-2 text-uppercase
-                @if($order->order_status == 'pending') bg-warning
-                @elseif($order->order_status == 'processing') bg-info
-                @elseif($order->order_status == 'shipped') bg-primary
-                @elseif($order->order_status == 'completed') bg-success
-                @else bg-danger
-                @endif">
-                {{ ucfirst($order->order_status) }}
-            </span>
-        </div>
     </div>
 </section>
 
-<!-- Modal Bukti Pembayaran -->
-<!-- Modal Bukti Pembayaran -->
 <div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content shadow">
-            <div class="modal-header bg-info text-white">
+            <div class="modal-header text-white" style="background-color: #A34A4A;">
                 <h5 class="modal-title" id="proofModalLabel"><i class="fas fa-image"></i> Bukti Pembayaran</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

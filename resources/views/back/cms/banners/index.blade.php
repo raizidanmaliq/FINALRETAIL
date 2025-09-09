@@ -31,7 +31,7 @@
                     <th>No.</th>
                     <th>Judul</th>
                     <th>Gambar</th>
-                    <th>Link</th>
+
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -62,7 +62,7 @@
                 { data: 'no', name: 'no', className: "text-center align-middle"},
                 { data: 'title', name: 'title', className: "align-middle" },
                 { data: 'image', name: 'image', className: "align-middle" },
-                { data: 'link', name: 'link', className: "align-middle" },
+
                 { data: 'status', name: 'status', className: "align-middle" },
                 { data: 'actions', name: 'actions', className: "align-middle", sortable: false },
             ]

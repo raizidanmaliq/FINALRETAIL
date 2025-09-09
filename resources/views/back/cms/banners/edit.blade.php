@@ -31,17 +31,18 @@
                             <input type="text" name="title" value="{{ $banner->title }}" class="form-control">
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label for="link">Link Tujuan (Opsional)</label>
-                            <input type="url" name="link" value="{{ $banner->link }}" class="form-control">
-                        </div>
+
 
                         <div class="form-group col-md-6">
                             <label for="image">Gambar Banner</label>
                             <input type="file" name="image" class="form-control">
                             <small class="form-text text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
                             @if ($banner->image)
-                                <a href="{{ asset($banner->image) }}" target="_blank" class="btn btn-sm btn-primary mt-2">Lihat Gambar Saat Ini</a>
+                                <a href="{{ asset($banner->image) }}" target="_blank"
+   class="btn btn-dark btn-sm mt-2">
+    <i class="la la-image"></i> Lihat Gambar Saat Ini
+</a>
+
                             @endif
                         </div>
 
@@ -56,9 +57,11 @@
                 </div>
 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-success float-right">
-                        <i class="la la-check-square-o"></i> Simpan Perubahan
-                    </button>
+                    <button type="submit" class="btn btn-danger float-right"
+        style="background-color: #9B4141; border-color: #9B4141; color:#fff;">
+    <i class="la la-check-square-o"></i> Simpan Perubahan
+</button>
+
                 </div>
             </div>
         </form>

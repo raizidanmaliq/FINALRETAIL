@@ -9,20 +9,15 @@ use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Pastikan role ada
         $ownerRole = Role::firstOrCreate(['name' => 'owner']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
-        // ========== OWNER ==========
         $owner1 = User::updateOrCreate(
             ['email' => 'superadmin@gmail.com'],
             [
-                'name'     => 'Super Admin 1',
+                'name' => 'Super Admin 1',
                 'password' => Hash::make('SecretDev123!'),
             ]
         );
@@ -31,17 +26,16 @@ class UserSeeder extends Seeder
         $owner2 = User::updateOrCreate(
             ['email' => 'superadmin2@gmail.com'],
             [
-                'name'     => 'Super Admin 2',
+                'name' => 'Super Admin 2',
                 'password' => Hash::make('SecretDev123!'),
             ]
         );
         $owner2->assignRole($ownerRole);
 
-        // ========== ADMIN ==========
         $admin1 = User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [
-                'name'     => 'Admin Staff 1',
+                'name' => 'Admin Staff 1',
                 'password' => Hash::make('SecretDev123!'),
             ]
         );
@@ -50,7 +44,7 @@ class UserSeeder extends Seeder
         $admin2 = User::updateOrCreate(
             ['email' => 'admin2@gmail.com'],
             [
-                'name'     => 'Admin Staff 2',
+                'name' => 'Admin Staff 2',
                 'password' => Hash::make('SecretDev123!'),
             ]
         );

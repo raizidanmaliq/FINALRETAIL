@@ -14,14 +14,9 @@ class CatalogController extends Controller
         // Mendapatkan semua kategori untuk dropdown filter
         $categories = ProductCategory::all();
 
-        // Mengambil produk-produk dengan label promo tanpa filter
-        // Mengambil produk-produk dengan label promo tanpa filter
-$promoProducts = Product::where('is_displayed', true)
-                               ->where('promo_label', 'Flash Sale') // Tambahkan filter ini
-                               ->get();
-
-        // Query dasar untuk semua produk yang ditampilkan
-        $query = Product::where('is_displayed', true);
+        // Query dasar untuk semua produk yang ditampilkan dengan eager loading
+        $query = Product::where('is_displayed', true)
+            ->with(['images', 'category', 'variants']);
 
         // --- Logika Pencarian dan Filter ---
 
@@ -29,20 +24,30 @@ $promoProducts = Product::where('is_displayed', true)
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%');
+                // Hanya mencari di nama produk
+                $q->where('name', 'like', '%' . $search . '%');
+                // Gabungkan dengan pencarian di nama kategori
+                $q->orWhereHas('category', function ($subQ) use ($search) {
+                    $subQ->where('name', 'like', '%' . $search . '%');
+                });
             });
         }
 
         // 2. Filter berdasarkan kategori
         if ($request->filled('category')) {
-    $categoryName = $request->input('category');
-    $query->whereHas('category', function ($q) use ($categoryName) {
-        $q->where('name', $categoryName); // Sekarang memfilter berdasarkan 'name'
-    });
-}
+            $categoryName = $request->input('category');
+            $query->whereHas('category', function ($q) use ($categoryName) {
+                $q->where('name', $categoryName);
+            });
+        }
 
-        // 3. Filter berdasarkan harga
+        // 3. Filter berdasarkan gender
+        if ($request->filled('gender')) {
+            $gender = $request->input('gender');
+            $query->where('gender', $gender);
+        }
+
+        // 4. Filter berdasarkan harga
         if ($request->filled('price')) {
             $priceRange = $request->input('price');
             switch ($priceRange) {
@@ -52,11 +57,10 @@ $promoProducts = Product::where('is_displayed', true)
                 case '100k-200k':
                     $query->whereBetween('selling_price', [100000, 200000]);
                     break;
-                // Tambahkan case lain jika ada
             }
         }
 
-        // 4. Urutkan (sort) produk
+        // 5. Urutkan (sort) produk
         if ($request->filled('sort')) {
             $sort = $request->input('sort');
             switch ($sort) {
@@ -78,7 +82,15 @@ $promoProducts = Product::where('is_displayed', true)
             $query->latest();
         }
 
-        // Ambil produk setelah semua filter dan pengurutan diterapkan
+        // Clone query untuk mendapatkan produk promo dengan filter yang sama
+        $promoQuery = clone $query;
+
+        // Ambil produk promo dengan filter yang sama
+        $promoProducts = $promoQuery->where('promo_label', 'Flash Sale')
+            ->limit(8) // Batasi jumlah produk promo yang ditampilkan
+            ->get();
+
+        // Ambil semua produk setelah semua filter dan pengurutan diterapkan
         $allProducts = $query->paginate(12);
 
         // Kirim data ke view

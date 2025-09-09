@@ -12,11 +12,16 @@ class ProductCategorySeeder extends Seeder
      */
     public function run(): void
     {
+        // Define 5 common fashion categories
         $categories = [
-            ['name' => 'Laki-laki'],
-            ['name' => 'Perempuan'],
+            ['name' => 'Pakaian Atasan'], // Tops
+            ['name' => 'Pakaian Bawahan'], // Bottoms
+            ['name' => 'Outerwear'], // Jaket, blazer, dsb.
+            ['name' => 'Aksesori'], // Tas, ikat pinggang, dsb.
+            ['name' => 'Sepatu'], // Shoes
         ];
 
+        // Loop through the array and create the categories if they don't already exist
         foreach ($categories as $category) {
             ProductCategory::firstOrCreate(['name' => $category['name']], $category);
         }

@@ -50,32 +50,37 @@ class TestimonialService {
     }
 
     public function data()
-{
-    $query = Testimonial::query();
+    {
+        $query = Testimonial::query();
 
-    return DataTables::of($query)
-        ->addColumn('actions', function ($item) {
-            return '
-                <div class="btn-group">
-                    <a href="' . route('admin.cms.testimonials.edit', $item) . '" class="btn btn-outline-warning">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <a href="' . route('admin.cms.testimonials.destroy', $item) . '" class="btn btn-outline-danger btn-delete">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                </div>
-            ';
-        })
-        ->editColumn('customer_photo', function ($item) {
-            return $item->customer_photo
-                ? '<img src="' . asset($item->customer_photo) . '" width="100" height="100">'
-                : '-';
-        })
-        ->editColumn('review', function ($item) {
-            return $item->review; // kalau ada <p>, biarin aja, nanti dirender
-        })
-        ->rawColumns(['actions', 'customer_photo', 'review']) // ⬅ tambahkan review di sini
-        ->make(true);
-}
-
+        return DataTables::of($query)
+            ->addColumn('actions', function ($item) {
+                return '
+                    <div class="btn-group">
+                        <a href="' . route('admin.cms.testimonials.edit', $item) . '" class="btn btn-outline-warning">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="' . route('admin.cms.testimonials.destroy', $item) . '" class="btn btn-outline-danger btn-delete">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                ';
+            })
+            ->editColumn('customer_photo', function ($item) {
+                return $item->customer_photo
+                    ? '<img src="' . asset($item->customer_photo) . '" width="100" height="100">'
+                    : '-';
+            })
+            ->editColumn('review', function ($item) {
+                return $item->review;
+            })
+            ->addColumn('order_date', function ($item) {
+                return $item->order_date ? \Carbon\Carbon::parse($item->order_date)->format('d-m-Y') : '-';
+            })
+            ->addColumn('product_name', function ($item) {
+                return $item->product_name ?? '-';
+            })
+            ->rawColumns(['actions', 'customer_photo', 'review'])
+            ->make(true);
+    }
 }

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Customer; // ✅ pastikan ini ada
-use App\Models\Inventory\Product; // ✅ sesuaikan namespace Product-mu
-
+use App\Models\Customer;
+use App\Models\Inventory\Product;
+use App\Models\Inventory\ProductVariant;
 class Cart extends Model
 {
     use HasFactory;
@@ -21,5 +21,11 @@ class Cart extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    // ✅ Relasi baru untuk ProductVariant
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class);
     }
 }

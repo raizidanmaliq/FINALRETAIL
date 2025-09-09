@@ -18,6 +18,8 @@ class CreateTestimonialsTable extends Migration
             $table->string('customer_name');
             $table->string('customer_photo')->nullable();
             $table->text('review');
+            $table->date('order_date')->nullable();
+            $table->string('product_name')->nullable();
             $table->integer('rating')->default(5);
             $table->timestamps();
         });

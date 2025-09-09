@@ -39,13 +39,7 @@
 @push('js')
 <script>
     $(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        const datatable = $('#datatable').DataTable({
+        $('#datatable').DataTable({
             responsive: true,
             processing: true,
             serverSide: true,
@@ -53,7 +47,7 @@
             pageLength: 10,
             pagingType: "simple_numbers",
             ajax: {
-                url: "{{ route('admin.cms.catalog.data') }}", // Perbaikan: Ubah nama rute
+                url: "{{ route('admin.cms.catalog.data') }}",
                 type: "GET"
             },
             columns: [
@@ -62,31 +56,9 @@
                 { data: 'name', name: 'name', className: "align-middle" },
                 { data: 'selling_price', name: 'selling_price', className: "align-middle" },
                 { data: 'stock', name: 'stock', className: "align-middle" },
-                { data: 'status_display', name: 'is_displayed', className: "align-middle" },
-                { data: 'actions', name: 'actions', className: "align-middle", orderable: false, searchable: false },
+                { data: 'status_display', name: 'is_displayed', className: "align-middle", orderable: false, searchable: false },
+                { data: 'actions', name: 'actions', className: "align-middle text-center", orderable: false, searchable: false },
             ]
-        });
-
-        $(document).on('click', '.btn-toggle-display', function(e) {
-            e.preventDefault();
-            const productId = $(this).data('id');
-            const action = $(this).data('action');
-
-            $.ajax({
-                url: `{{ url('admin/cms/catalog') }}/${productId}/toggle-display`, // Perbaikan: Ubah URL
-                type: 'POST',
-                data: {
-                    action: action
-                },
-                success: function(response) {
-                    alert(response.message);
-                    datatable.ajax.reload();
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                    console.error(xhr.responseText);
-                }
-            });
         });
     });
 </script>

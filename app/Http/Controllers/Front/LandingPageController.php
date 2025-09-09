@@ -10,36 +10,39 @@ use Illuminate\Http\Request;
 
 class LandingPageController extends Controller
 {
-    // Perbaikan: Tambahkan Request $request sebagai parameter
     public function index(Request $request)
     {
+        // Mengambil 4 produk bestseller terbaru dengan eager loading
         $bestSellerProducts = Product::where('is_displayed', true)
-                                     ->where('promo_label', 'Bestseller')
-                                     ->latest()
-                                     ->take(4)
-                                     ->get();
+            ->where('promo_label', 'Bestseller')
+            ->with(['images', 'variants'])
+            ->latest()
+            ->take(4)
+            ->get();
 
+        // Mengambil 2 produk flash sale terbaru dengan eager loading
         $flashSaleProducts = Product::where('is_displayed', true)
-                                     ->where('promo_label', 'Flash Sale')
-                                     ->take(2)
-                                     ->get();
+            ->where('promo_label', 'Flash Sale')
+            ->with(['images', 'variants'])
+            ->latest() // Mengambil produk terbaru
+            ->take(2)
+            ->get();
 
+        // Mengambil banner yang aktif dan paling baru diperbarui
         $banner = Banner::where('is_active', true)
-                        ->latest('updated_at')
-                        ->first();
+            ->latest('updated_at')
+            ->first();
 
-        // Mulai query untuk testimoni
+        // Mengambil testimoni dengan filter rating
         $query = Testimonial::latest();
 
-        // Tambahkan kondisi filter jika parameter rating ada di URL
         if ($request->has('rating')) {
             $query->where('rating', $request->input('rating'));
         }
 
-        // Jalankan paginasi pada query yang sudah difilter
         $testimonials = $query->paginate(4);
 
-        // Menghitung total ulasan untuk tombol "Semua"
+        // Menghitung total review dan rata-rata rating
         $totalReviews = Testimonial::count();
         $averageRating = Testimonial::avg('rating');
 
@@ -51,5 +54,11 @@ class LandingPageController extends Controller
             'totalReviews',
             'averageRating'
         ));
+    }
+
+    public function getProductDetails(Product $product)
+    {
+        $product->load(['variants', 'images']);
+        return response()->json($product);
     }
 }

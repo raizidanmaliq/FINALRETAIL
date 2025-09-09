@@ -13,17 +13,21 @@ return new class extends Migration
             $table->foreignId('category_id')
                 ->nullable()
                 ->constrained('product_categories')
-                ->onDelete('cascade'); // foreign key sudah benar
+                ->onDelete('cascade');
             $table->string('name');
             $table->string('sku')->unique();
-            $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->string('unit');
             $table->integer('stock')->default(0);
             $table->string('promo_label')->nullable();
             $table->decimal('cost_price', 10, 2)->default(0);
             $table->decimal('selling_price', 10, 2)->default(0);
-            $table->boolean('is_displayed')->default(false); // hapus ->after('status')
+            $table->boolean('is_displayed')->default(false);
+
+            // ✅ Tambahan kolom sesuai kebutuhan
+            $table->text('size_details')->nullable();
+            $table->string('size_chart_image')->nullable();
+
             $table->timestamps();
         });
     }

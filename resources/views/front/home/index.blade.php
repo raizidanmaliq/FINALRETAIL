@@ -3,47 +3,43 @@
 @section('content')
 <main>
     {{-- Hero Section --}}
-    {{-- Hero Section --}}
-<section class="hero-section text-md-start py-5"
-         style="background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-                 position: relative; overflow: hidden;">
-    {{-- Wave background dekoratif --}}
-    <div style="position: absolute; top:0; left:0; width:100%; height:100%;
-                 background: url('{{ asset('images/image2.png') }}') no-repeat center center / cover;
-                 opacity:0.3; z-index:0;">
-    </div>
+    <section class="hero-section text-md-start py-5"
+             style="background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+                     position: relative; overflow: hidden;">
+        {{-- Wave background dekoratif --}}
+        <div style="position: absolute; top:0; left:0; width:100%; height:100%;
+                     background: url('{{ asset('images/image2.png') }}') no-repeat center center / cover;
+                     opacity:0.3; z-index:0;">
+        </div>
 
-    <div class="container d-flex align-items-center h-100 position-relative" style="z-index:1;">
-        <div class="row align-items-center">
-            {{-- Gambar di kiri --}}
-            <div class="col-md-6 mb-4 mb-md-0">
-                <img src ="{{ asset('images/image1.png') }}" alt="Hero" class="img-fluid">
-            </div>
-            {{-- Teks di kanan --}}
-            <div class="col-md-6">
-                <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif; line-height:1.3;">
-                    Belanja Mudah<br>
-                    Harga <span style="color: #CC3333;">Bersahabat,</span><br>
-                    <span style="color: #CC3333;">Kualitas</span> Terjamin
-                </h1>
-                <p class="lead" style="color: #555;">
-                    Temukan produk terbaik dengan harga yang tidak akan menguras kantong Anda.
-                </p>
-                <a href="{{ route('customer.auth.registers.index') }}"
-                   class="btn btn-danger btn-lg mt-4"
-                   style="background-color: #9B4141; border-radius: 8px; padding: 10px 30px;">
-                    Register
-                </a>
+        <div class="container d-flex align-items-center h-100 position-relative" style="z-index:1;">
+            <div class="row align-items-center">
+                {{-- Gambar di kiri --}}
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <img src="{{ asset('images/image1.png') }}" alt="Hero" class="img-fluid">
+                </div>
+                {{-- Teks di kanan --}}
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif; line-height:1.3;">
+                        Belanja Mudah<br>
+                        Harga <span style="color: #CC3333;">Bersahabat,</span><br>
+                        <span style="color: #CC3333;">Kualitas</span> Terjamin
+                    </h1>
+                    <p class="lead" style="color: #555;">
+                        Temukan produk terbaik dengan harga yang tidak akan menguras kantong Anda.
+                    </p>
+                    <a href="{{ route('customer.auth.registers.index') }}"
+                       class="btn btn-danger btn-lg mt-4"
+                       style="background-color: #9B4141; border-radius: 8px; padding: 10px 30px;">
+                        Register
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
-
-
+    </section>
 
     {{-- Highlight Keunggulan --}}
-    <section class="py-5" style="background:#f8f9fa;"> {{-- background abu-abu terang --}}
+    <section class="py-5" style="background:#f8f9fa;">
     <div class="container text-center">
         {{-- Judul --}}
         <h2 class="fw-bold mb-5" style="color:#9B4141;">Mengapa Memilih Kami?</h2>
@@ -51,29 +47,29 @@
         <div class="row justify-content-center">
             {{-- Produk Original --}}
             <div class="col-md-3 mb-4">
-                <i class="fas fa-certificate fa-3x"  style="color: #9B4141;"></i>
-                <h5 class="color: #9B4141;">Produk Original</h5>
+                <i class="fas fa-tshirt fa-3x mb-3" style="color: #9B4141;"></i>
+                <h5 class="fw-bold" style="color: #9B4141;">Produk Original</h5>
                 <p class="text-muted medium">Kami menjamin produk yang selalu baru dan berkualitas.</p>
             </div>
 
             {{-- Harga Kompetitif --}}
             <div class="col-md-3 mb-4">
-                <i class="fas fa-tags fa-3x" style="color: #9B4141;"  ></i>
-                <h5 style="color: #9B4141;" >Harga Kompetitif</h5>
+                <i class="fas fa-tags fa-3x mb-3" style="color: #9B4141;"></i>
+                <h5 class="fw-bold" style="color: #9B4141;">Harga Kompetitif</h5>
                 <p class="text-muted medium">Dapatkan harga terbaik di pasar tanpa mengorbankan kualitas.</p>
             </div>
 
             {{-- Garansi Uang Kembali --}}
             <div class="col-md-3 mb-4">
-                <i class="fas fa-undo fa-3x" style="color: #9B4141;"></i>
-                <h5 style="color: #9B4141;">Garansi Uang Kembali</h5>
+                <i class="fas fa-money-bill-wave fa-3x mb-3" style="color: #9B4141;"></i>
+                <h5 class="fw-bold" style="color: #9B4141;">Garansi Uang Kembali</h5>
                 <p class="text-muted medium">Jika tidak puas, uang Anda akan kami kembalikan.</p>
             </div>
 
             {{-- Pengiriman Cepat --}}
             <div class="col-md-3 mb-4">
-                <i class="fas fa-shipping-fast fa-3x" style="color: #9B4141;" ></i>
-                <h5 style="color: #9B4141;">Pengiriman Cepat</h5>
+                <i class="fas fa-shipping-fast fa-3x mb-3" style="color: #9B4141;"></i>
+                <h5 class="fw-bold" style="color: #9B4141;">Pengiriman Cepat</h5>
                 <p class="text-muted medium">Pesanan Anda akan sampai tepat waktu dan aman.</p>
             </div>
         </div>
@@ -81,117 +77,97 @@
 </section>
 
 
-
-
     {{-- Best Seller --}}
-<section id="best-seller" class="best-seller-section py-5">
-    <div class="container">
-        <h2 class="text-center" style="color: #9B4141;">Best Seller</h2>
-        <p class="text-center text-muted mb-5">The Most Popular Choices Right Now</p>
-        <div class="row">
-            @forelse($bestSellerProducts as $product)
-            <div class="col-md-3 mb-4">
-     <div class="card h-100 shadow-sm border-0 product-card">
-         <div class="position-relative">
-             {{-- Tambahkan div pembungkus dengan inline style untuk tinggi tetap --}}
-             <div style="height: 250px; overflow: hidden;">
-                 <img src="{{ asset($product->image) }}" class="card-img-top product-image w-100 h-100 object-fit-cover" alt="{{ $product->name }}">
-             </div>
+    <section id="best-seller" class="best-seller-section py-5">
+        <div class="container">
+            <h2 class="text-center" style="color: #9B4141;">Best Seller</h2>
+            <p class="text-center text-muted mb-5">The Most Popular Choices Right Now</p>
+            <div class="row">
+                @forelse($bestSellerProducts as $product)
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm border-0 product-card">
+                        <div class="position-relative">
+                            <div style="height: 250px; overflow: hidden;">
+    @if($product->images && count($product->images) > 0)
+        <img src="{{ asset($product->images[0]->image_path) }}"
+             class="card-img-top product-image w-100 h-100 object-fit-cover"
+             alt="{{ $product->name }}">
+    @endif
+</div>
+                            @if($product->promo_label)
+                            <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold promo-badge"
+                                style="background:#A34A4A; border-radius:6px; font-size:0.85rem;">
+                                {{ $product->promo_label }}
+                            </span>
+                            @endif
+                        </div>
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title fw-bold mb-1 product-name">{{ $product->name }}</h6>
+                            {{-- <p class="card-text text-muted small flex-grow-1 product-description">
+                                {{ Str::limit(strip_tags($product->description), 60) }}
+                            </p> --}}
+                            <p class="card-text fw-bold mb-2 product-price" style="color: #CC3333;">Rp. {{ number_format($product->selling_price, 0, ',', '.') }}</p>
+                            <button class="btn btn-danger w-100 mt-auto quick-view-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#quickViewModal"
+                                data-product-id="{{ $product->id }}">
+                                Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <p class="text-center">Tidak ada produk best seller saat ini.</p>
+                @endforelse
+            </div>
+        </div>
+    </section>
 
-             {{-- Badge dan icon lainnya tetap di sini --}}
-             @if($product->promo_label)
-             <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold promo-badge"
-                   style="background:#A34A4A; border-radius:6px; font-size:0.85rem;">
-                 {{ $product->promo_label }}
-             </span>
-             @endif
-
-         </div>
-
-                     <div class="card-body text-left d-flex flex-column">
-                         <h6 class="card-title fw-bold mb-1 product-name">{{ $product->name }}</h6>
-                         {{-- Tambahkan deskripsi untuk kompatibilitas modal --}}
-                         <p class="card-text text-muted small flex-grow-1 product-description">
-                             {{ Str::limit(strip_tags($product->description), 60) }}
-                         </p>
-                         <p class="card-text fw-bold mb-2 product-price" style="color: #CC3333;">Rp. {{ number_format($product->selling_price, 0, ',', '.') }}</p>
-                         {{-- Ganti tag <a> menjadi <button> dan tambahkan atribut modal --}}
-                         <button class="btn btn-danger w-100 mt-auto quick-view-btn"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#quickViewModal"
-                                 data-product-id="{{ $product->id }}">
-                             Buy
-                         </button>
-                     </div>
-                 </div>
-             </div>
-             @empty
-             <p class="text-center">Tidak ada produk best seller saat ini.</p>
-             @endforelse
-         </div>
-     </div>
-</section>
-
-
-
-
-    {{-- Flash Sale --}}
-    {{-- Flash Sale --}}
-{{-- Flash Sale --}}
-<section id="flash-sale" class="flash-sale-section py-5" style="background:#fff;">
+    {{-- Flash Sale Section --}}
+    <section id="flash-sale" class="flash-sale-section py-5" style="background:#fff;">
         <div class="container">
             <div class="row g-4 align-items-stretch">
-                {{-- Kolom Kiri: Produk Flash Sale --}}
                 <div class="col-lg-6 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold" style="color:#B22929; font-size:1.25rem;">FLASH SALE</h5>
-                        {{-- Timer Flash Sale --}}
                         <span id="flash-sale-timer" class="px-3 py-1 text-white fw-bold rounded"
-                              style="background:#B22929; font-size:0.85rem;">
+                            style="background:#B22929; font-size:0.85rem;">
                             00:00:00
                         </span>
                         <a href="{{ route('front.catalog.index') }}" class="fw-bold"
-                           style="color:#B22929; font-size:0.9rem;">
-                            Lihat Semua →
-                        </a>
+   style="color:#B22929; font-size:0.9rem; text-decoration:none; display:inline-block;">
+    Lihat Semua →
+</a>
+
                     </div>
-                    {{-- Kontainer untuk produk Flash Sale (2 per baris) --}}
                     <div class="row g-3 flex-grow-1">
                         @forelse($flashSaleProducts as $product)
                             <div class="col-6">
-                                {{-- PERBAIKAN: Menambahkan kelas product-card --}}
                                 <div class="card h-100 shadow-sm border-0 rounded-3 text-center product-card">
-                                    {{-- Gambar Produk --}}
                                     <div class="position-relative" style="height:200px; overflow:hidden;">
-                                        {{-- PERBAIKAN: Menambahkan kelas product-image --}}
-                                        <img src="{{ asset(str_replace('\\', '/', $product->image)) }}"
-                                             class="w-100 h-100 object-fit-cover product-image"
-                                             alt="{{ $product->name }}"
-                                             style="border-radius:12px;">
-                                        {{-- Badge Flash Sale --}}
+    @if($product->images && count($product->images) > 0)
+        <img src="{{ asset($product->images[0]->image_path) }}"
+             class="card-img-top product-image w-100 h-100 object-fit-cover"
+             alt="{{ $product->name }}">
+    @endif
                                         <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold"
-                                              style="background:#B22929; border-radius:6px; font-size:0.7rem;">
+                                            style="background:#B22929; border-radius:6px; font-size:0.7rem;">
                                             FLASH SALE
                                         </span>
                                     </div>
-                                    {{-- Nama & Harga --}}
                                     <div class="p-3 d-flex flex-column">
-                                        {{-- PERBAIKAN: Menambahkan kelas product-name --}}
                                         <h6 class="fw-bold mb-1 product-name" style="font-size:0.95rem;">{{ $product->name }}</h6>
-                                        {{-- PERBAIKAN: Menambahkan kelas product-description --}}
-                                        <p class="mb-2 text-muted small flex-grow-1 product-description" style="font-size:0.8rem;">
+                                        {{-- <p class="mb-2 text-muted small flex-grow-1 product-description" style="font-size:0.8rem;">
                                             {{ Str::limit(strip_tags($product->description), 40) }}
-                                        </p>
-                                        {{-- PERBAIKAN: Menambahkan kelas product-price --}}
+                                        </p> --}}
                                         <p class="fw-bold mb-3 product-price" style="color:#B22929; font-size:0.95rem;">
                                             Rp. {{ number_format($product->selling_price, 0, ',', '.') }}
                                         </p>
-                                        {{-- Tombol Buy --}}
                                         <button class="btn w-100 text-white mt-auto quick-view-btn"
-                                                style="background:#B22929; border-radius:8px; font-size:0.85rem;"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#quickViewModal"
-                                                data-product-id="{{ $product->id }}">
+                                            style="background:#B22929; border-radius:8px; font-size:0.85rem;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#quickViewModal"
+                                            data-product-id="{{ $product->id }}">
                                             Buy
                                         </button>
                                     </div>
@@ -213,8 +189,8 @@
                             <div class="card border-0 shadow-sm h-100 d-flex align-items-center justify-content-center"
                                 style="border-radius:1rem; overflow:hidden; background:#fff;">
                                 <img src="{{ asset($finalPath) }}" alt="{{ $banner->title }}"
-                                     class="img-fluid"
-                                     style="max-height: 400px; width: 100%; object-fit: cover; border-radius:1rem;">
+                                    class="img-fluid"
+                                    style="max-height: 400px; width: 100%; object-fit: cover; border-radius:1rem;">
                             </div>
                         </a>
                     @else
@@ -227,110 +203,108 @@
         </div>
     </section>
 
-
-
-
-
-
-
     {{-- Penilaian Produk --}}
-    {{-- resources/views/product/reviews.blade.php --}}
-<section id="product-reviews" class="py-4" style="background:#fff;">
-    <div class="container">
+    <section id="product-reviews" class="py-4" style="background:#fff;">
+        <div class="container">
+            {{-- Judul --}}
+            <h5 class="fw-bold mb-3" style="color:#A34A4A;">Penilaian Produk</h5>
 
-        {{-- Judul --}}
-        <h5 class="fw-bold mb-3" style="color:#A34A4A;">Penilaian Produk</h5>
+            {{-- Summary Rating --}}
+            <div class="border rounded p-3 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h3 class="fw-bold me-3 mb-0" style="color:#000;">
+                        {{ number_format($averageRating, 1) }} dari 5
+                    </h3>
+                    <div>
+                        @php
+                            $rating = round($averageRating);
+                        @endphp
+                        @for ($i = 0; $i < 5; $i++)
+                            @if ($rating > $i)
+                                <span class="text-warning fs-5">★</span>
+                            @else
+                                <span class="text-muted fs-5">★</span>
+                            @endif
+                        @endfor
+                    </div>
+                </div>
 
-        {{-- Summary Rating --}}
-        <div class="border rounded p-3 mb-4">
-            <div class="d-flex align-items-center mb-3">
-                <h3 class="fw-bold me-3 mb-0" style="color:#000;">
-                    {{ number_format($averageRating, 1) }} dari 5
-                </h3>
-                <div>
-                    @php
-                        $rating = round($averageRating);
-                    @endphp
-                    @for ($i = 0; $i < 5; $i++)
-                        @if ($rating > $i)
-                            <span class="text-warning fs-5">★</span>
-                        @else
-                            <span class="text-muted fs-5">★</span>
-                        @endif
+                {{-- Filter Buttons (dinamis) --}}
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('front.home.index') }}" class="btn btn-light btn-sm border">Semua ({{ $totalReviews }})</a>
+                    @for ($i = 5; $i >= 1; $i--)
+                        @php
+                            $count = App\Models\Cms\Testimonial::where('rating', $i)->count();
+                        @endphp
+                        <a href="{{ route('front.home.index', ['rating' => $i]) }}" class="btn btn-light btn-sm border">{{ $i }} Bintang ({{ number_format($count, 0, ',', '.') }})</a>
                     @endfor
                 </div>
             </div>
 
-            {{-- Filter Buttons (dinamis) --}}
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('front.home.index') }}" class="btn btn-light btn-sm border">Semua ({{ $totalReviews }})</a>
-                @for ($i = 5; $i >= 1; $i--)
-                    @php
-                        $count = App\Models\Cms\Testimonial::where('rating', $i)->count();
-                    @endphp
-                    <a href="{{ route('front.home.index', ['rating' => $i]) }}" class="btn btn-light btn-sm border">{{ $i }} Bintang ({{ number_format($count, 0, ',', '.') }})</a>
-                @endfor
-            </div>
-        </div>
-
-        {{-- Review Card --}}
-        @forelse($testimonials as $testimonial)
-        <div class="mb-4 pb-3 border-bottom">
-
-            {{-- User Info --}}
-            <div class="d-flex align-items-center mb-2">
-                <img src="{{ $testimonial->customer_photo ? asset($testimonial->customer_photo) : 'https://via.placeholder.com/40' }}"
-                     alt="{{ $testimonial->customer_name }}"
-                     class="rounded-circle me-2"
-                     style="width:40px; height:40px; object-fit:cover;">
-                <div>
-                    <h6 class="fw-bold mb-0">{{ $testimonial->customer_name }}</h6>
-                    <small class="text-muted">{{ \Carbon\Carbon::parse($testimonial->created_at)->format('d-m-Y') }}</small>
-                </div>
-            </div>
-
-            {{-- Rating --}}
-            <div class="mb-1">
-                @for ($i = 0; $i < 5; $i++)
-                    @if ($testimonial->rating > $i)
-                        <span class="text-warning">★</span>
+            {{-- Review Card --}}
+            @forelse($testimonials as $testimonial)
+            <div class="mb-4 pb-3 border-bottom">
+                {{-- User Info --}}
+                <div class="d-flex align-items-center mb-2">
+                    @if($testimonial->customer_photo)
+                        <img src="{{ asset($testimonial->customer_photo) }}"
+                             alt="{{ $testimonial->customer_name }}"
+                             class="rounded-circle me-2"
+                             style="width:40px; height:40px; object-fit:cover;">
                     @else
-                        <span class="text-muted">★</span>
+                        <div class="rounded-circle me-2 d-flex align-items-center justify-content-center bg-secondary"
+                             style="width:40px; height:40px;">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
                     @endif
-                @endfor
-            </div>
-
-            {{-- Isi Review --}}
-            <p class="mb-2">
-    {{ strip_tags($testimonial->review) }}
-</p>
-
-            {{-- Foto/Media (jika ada) --}}
-            @if($testimonial->media)
-            <div class="d-flex gap-2">
-                {{-- Loop melalui media --}}
-                @foreach(json_decode($testimonial->media) as $mediaPath)
-                    <div class="border rounded overflow-hidden" style="width:80px; height:100px;">
-                        <img src="{{ asset($mediaPath) }}" class="w-100 h-100 object-fit-cover">
+                    <div>
+                        <h6 class="fw-bold mb-0">{{ $testimonial->customer_name }}</h6>
+                        <small class="text-muted">{{ \Carbon\Carbon::parse($testimonial->order_date)->format('d-m-Y') }}</small>
                     </div>
-                @endforeach
+                </div>
+
+                {{-- Rating --}}
+                <div class="mb-1">
+                    @for ($i = 0; $i < 5; $i++)
+                        @if ($testimonial->rating > $i)
+                            <span class="text-warning">★</span>
+                        @else
+                            <span class="text-muted">★</span>
+                        @endif
+                    @endfor
+                </div>
+
+        {{-- Tampilkan Nama Pesanan --}}
+        <p class="mb-2">{{ $testimonial->product_name ?? '-' }}</p>
+
+                {{-- Isi Review --}}
+                <p class="mb-2">
+                    {{ strip_tags($testimonial->review) }}
+                </p>
+
+
+
+                {{-- Foto/Media (jika ada) --}}
+                @if($testimonial->media)
+                <div class="d-flex gap-2">
+                    @foreach(json_decode($testimonial->media) as $mediaPath)
+                        <div class="border rounded overflow-hidden" style="width:80px; height:100px;">
+                            <img src="{{ asset($mediaPath) }}" class="w-100 h-100 object-fit-cover">
+                        </div>
+                    @endforeach
+                </div>
+                @endif
             </div>
-            @endif
+            @empty
+            <p class="text-center text-muted">Belum ada penilaian produk saat ini.</p>
+            @endforelse
+
+            {{-- Pagination --}}
+            <div class="d-flex justify-content-center mt-4">
+                {{ $testimonials->links('vendor.pagination.bootstrap-5') }}
+            </div>
         </div>
-        @empty
-        <p class="text-center text-muted">Belum ada penilaian produk saat ini.</p>
-        @endforelse
-
-        {{-- Pagination --}}
-        {{-- Pagination --}}
-<div class="d-flex justify-content-center mt-4">
-    {{ $testimonials->links('vendor.pagination.bootstrap-5') }}
-</div>
-    </div>
-</section>
-
-
-
+    </section>
 
     <section class="py-5"
     style="background: url('{{ asset('images/image2.png') }}') no-repeat center center/cover;">
@@ -342,38 +316,37 @@
             </p>
         </div>
 
-        <div class="row align-items-center">
+        <div class="row align-items-stretch">
             {{-- Foto Founder --}}
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 shadow-sm">
+            <div class="col-md-4 mb-3 d-flex">
+                <div class="card border-0 shadow-sm h-100 w-100">
                     <img src="{{ asset('images/image4.png') }}" class="card-img-top" alt="Founder">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h6 class="fw-bold mb-1">Sarah Wijaya</h6>
                         <p class="text-muted mb-2">Founder & Creative Director</p>
                         <p class="mb-0">
                             Kami percaya bahwa desain yang baik tidak hanya tentang estetika,
                             tetapi tentang menciptakan pengalaman yang bermakna bagi setiap pengguna.
                         </p>
+                        {{-- Spacer agar teks mepet bawah --}}
+                        <div class="mt-auto"></div>
                     </div>
                 </div>
             </div>
 
             {{-- Foto Tim --}}
-            <div class="col-md-8 mb-3">
-                <img src="{{ asset('images/image3.png') }}" class="img-fluid rounded shadow" alt="Tim Kami">
+            <div class="col-md-8 mb-3 d-flex">
+                <img src="{{ asset('images/image3.png') }}" class="img-fluid rounded shadow h-100 w-100 object-fit-cover" alt="Tim Kami">
             </div>
         </div>
     </div>
 </section>
 
-
-
-
     <section class="py-5">
     <div class="container">
         <h2 class="text-center fw-bold mb-5" style="color:#9B4141;">
-    Perjalanan Kami
-</h2>
+            Perjalanan Kami
+        </h2>
 
         <div class="position-relative">
             <div class="position-absolute top-0 bottom-0 start-0 ms-2 border-start border-2 border-secondary"></div>
@@ -439,12 +412,9 @@
             </div>
         </div>
     </div>
-</section>
+    </section>
 
-
-
-
-<section class="cara-pemesanan py-5">
+    <section class="cara-pemesanan py-5">
     <div class="container text-center">
         <h2 class="mb-5 fw-bold" style="color: #A34A4A;">Cara Pemesanan</h2>
         <div class="card p-4 shadow-sm" style="border: 2px solid #A34A4A; border-radius: 12px;">
@@ -522,11 +492,7 @@
             </div>
         </div>
     </div>
-</section>
-
-
-
-
+    </section>
 
     <section class="keamanan-jaminan py-5">
     <div class="container text-center">
@@ -541,7 +507,7 @@
             <div class="col-md-6">
                 <div class="card p-4 h-100 shadow-sm border-0">
                     <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i class="fas fa-shield-alt fa-3x" style="color: #9B4141;"></i>
+                        <i class="fas fa-certificate fa-3x" style="color: #9B4141;"></i>
                     </div>
                     <h5 class="fw-bold" style="color:#9B4141;">Keamanan Transaksi</h5>
                     <ul class="list-unstyled text-start mt-3">
@@ -556,7 +522,7 @@
             <div class="col-md-6">
                 <div class="card p-4 h-100 shadow-sm border-0">
                     <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i class="fas fa-certificate fa-3x" style="color: #9B4141;"></i>
+                        <i class="fas fa-shield-alt fa-3x" style="color: #9B4141;"></i>
                     </div>
                     <h5 class="fw-bold" style="color:#9B4141;">Garansi Produk</h5>
                     <ul class="list-unstyled text-start mt-3">
@@ -587,10 +553,7 @@
             </div>
         </div>
     </div>
-</section>
-
-
-
+    </section>
 
     <section class="closing-cta py-5" style="background-color: #A34A4A;">
     <div class="container">
@@ -626,92 +589,175 @@
 
             </div>
         </div>
-    </div>
-</section>
-{{-- Modal Quick View --}}
-<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pb-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 pt-0">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4 mb-md-0 text-center">
-                        <img id="modal-product-image" src="" alt="Product Image" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
-                    </div>
-                    <div class="col-md-6 d-flex flex-column">
-                        <h2 id="modal-product-name" class="fw-bold mb-2" style="color:#A34A4A;"></h2>
-                        <h4 class="mt-2 mb-3">
-                            <span id="modal-product-price" class="fw-bold" style="color:#A34A4A; font-size: 1.8rem;"></span>
-                        </h4>
-                        <p class="text-muted small mb-4" id="modal-product-description"></p>
-                        <p class="fw-bold mb-4" id="modal-product-stock" style="color: #6c757d;"></p>
+    </section>
 
-                        {{-- Form baru untuk menambahkan ke keranjang --}}
-                        <form id="add-to-cart-form" method="POST" action="">
-     @csrf
-     <input type="hidden" name="product_id" id="modal-product-id">
-     <div class="d-grid gap-2">
-         <button type="submit" class="btn text-white" style="background-color: #A34A4A; border-radius: 30px; padding: 12px 24px;">
-             <i class="fas fa-shopping-cart me-2"></i> Beli Sekarang
-         </button>
-     </div>
-</form>
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0 position-absolute top-0 end-0 z-3">
+                    <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 pt-5">
+                    <div class="row g-4 align-items-stretch">
+                        {{-- Gambar --}}
+                        <div class="col-md-6 text-center d-flex">
+                            <img id="modal-product-image"
+                                src=""
+                                alt="Product Image"
+                                class="img-fluid rounded shadow-sm w-100 h-100"
+                                style="object-fit: cover;">
+                        </div>
+
+                        {{-- Detail Produk --}}
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div>
+                                <h3 id="modal-product-name" class="fw-bold mb-2" style="color:#A34A4A;"></h3>
+                                <h4 id="modal-product-price" class="fw-bold mb-3" style="color:#A34A4A;"></h4>
+                                <div id="modal-product-description"
+     class="text-muted small mb-2"
+     style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 4.5em; white-space: pre-line;">
+</div>
+                                <p id="modal-product-stock" class="fw-bold mb-3 text-dark"></p>
+
+                                {{-- Varian --}}
+                                <div id="modal-product-variants" class="mb-3"></div>
+                            </div>
+
+                            {{-- Spacer otomatis --}}
+                            <div class="mt-auto">
+                                <a id="view-product-detail" href="#"
+                                class="btn text-white w-100"
+                                style="background-color:#A34A4A; border-radius: 30px; padding: 12px 24px;">
+                                <i class="fas fa-shopping-cart me-2"></i> Beli Sekarang
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 </main>
+
+<!-- ============================= -->
+<!-- CHATBOT WIDGET -->
+<!-- ============================= -->
+<!-- Widget Chatbot -->
+<div id="chatbotWidget" class="card shadow"
+     style="display:none; width:350px; position:fixed; bottom:120px; right:20px; z-index:1200; border-radius:12px;">
+
+    <!-- Chat Section -->
+    <div id="chatbotChat">
+        <div class="card-header d-flex justify-content-between align-items-center py-3"
+             style="background-color: #A34A4A; color: white; border-top-left-radius:12px; border-top-right-radius:12px;">
+            <div class="d-flex align-items-center">
+                <div class="me-2" style="width:30px; height:30px; background-color:white; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-robot" style="color:#A34A4A;"></i>
+                </div>
+                <h6 class="mb-0 fw-bold">Ahlinya Retail CS</h6>
+            </div>
+            <button type="button" class="btn-close btn-close-white" id="closeChatbot"></button>
+        </div>
+        <div class="card-body p-3" id="chatbot-body"
+             style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+            <!-- Pesan chatbot muncul di sini -->
+        </div>
+        <div class="card-footer p-3">
+            <div id="chatbot-input-container"></div>
+            <div id="chatbot-options" class="d-flex flex-wrap gap-2 mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Ikon WhatsApp -->
+<a href="#" class="btn btn-success rounded-circle position-fixed bottom-0 end-0 m-4 shadow" id="openChatbot"
+   style="width: 60px; height: 60px; font-size: 1.5rem; z-index: 1050; display: flex; align-items: center; justify-content: center;">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 @endsection
 
 @push('js')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const quickViewModal = document.getElementById('quickViewModal');
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    // Ketika modal dibuka
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const quickViewModal = document.getElementById('quickViewModal');
+    const viewProductDetailBtn = document.getElementById('view-product-detail');
+
     quickViewModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
-        const card = button.closest('.product-card');
+        const productId = button.getAttribute('data-product-id');
 
-        // Pastikan card ditemukan
-        if (card) {
-            const productName = card.querySelector('.product-name').textContent;
-            const productPrice = card.querySelector('.product-price').textContent;
-            const productImage = card.querySelector('.product-image').src;
-            const productId = button.getAttribute('data-product-id');
-            const productDescription = card.querySelector('.product-description') ? card.querySelector('.product-description').textContent : '';
+        // Reset modal content
+        document.getElementById('modal-product-image').src = '';
+        document.getElementById('modal-product-name').textContent = '';
+        document.getElementById('modal-product-price').textContent = '';
+        document.getElementById('modal-product-description').textContent = '';
+        document.getElementById('modal-product-stock').textContent = 'Stok: Tersedia';
+        document.getElementById('modal-product-variants').innerHTML = '';
 
-            // Set isi modal
-            document.getElementById('modal-product-image').src = productImage;
-            document.getElementById('modal-product-name').textContent = productName;
-            document.getElementById('modal-product-price').textContent = productPrice;
-            document.getElementById('modal-product-description').textContent = productDescription;
-            document.getElementById('modal-product-stock').textContent = 'Stok: Tersedia';
-            document.getElementById('modal-product-id').value = productId;
+        // Set URL untuk tombol detail produk
+        viewProductDetailBtn.href = `/catalog/${productId}`;
 
-            // Set action form ke route add cart
-            const form = quickViewModal.querySelector('form');
-            form.action = `/customer/carts/${productId}/add`;
-        }
-    });
+        fetch(`/product/${productId}/details`)
+            .then(response => response.json())
+            .then(data => {
+                // Update modal content with fetched data
+                // Hanya set gambar jika tersedia
+if (data.images && data.images.length > 0) {
+    document.getElementById('modal-product-image').src = `{{ asset('') }}${data.images[0].image_path}`;
+}
+                document.getElementById('modal-product-name').textContent = data.name;
+                document.getElementById('modal-product-price').textContent = `Rp. ${data.selling_price.toLocaleString('id-ID')}`;
+                // Konversi tag <p> menjadi baris baru dan hapus tag lainnya
+const formattedText = data.description
+    .replace(/<p>/g, '')      // Hapus tag <p> pembuka
+    .replace(/<\/p>/g, '\n')  // Ganti tag </p> penutup dengan baris baru
+    .replace(/<[^>]*>/g, ''); // Hapus tag HTML lainnya
 
-    // Optional: Jika customer belum login, redirect ke login
-    const addToCartForm = quickViewModal.querySelector('form');
-    addToCartForm.addEventListener('submit', function (e) {
-        @if(!auth()->guard('customer')->check())
-            e.preventDefault();
-            window.location.href = "{{ route('customer.auth.login.index') }}";
-        @endif
+document.getElementById('modal-product-description').textContent = formattedText;
+                document.getElementById('modal-product-stock').textContent = 'Stok: Tersedia';
+
+                // Generate variant options
+                const variantsContainer = document.getElementById('modal-product-variants');
+                variantsContainer.innerHTML = ''; // Kosongkan kontainer varian
+
+                if (data.variants && data.variants.length > 0) {
+                    const colors = [...new Set(data.variants.map(v => v.color))];
+                    const sizes = [...new Set(data.variants.map(v => v.size))];
+
+                    // Color selection
+                    if (colors.length > 0) {
+                        let colorHtml = '<h6 class="fw-bold mt-2">Warna</h6><div class="d-flex flex-wrap gap-2">';
+                        colors.forEach(color => {
+                            colorHtml += `<button type="button" class="btn btn-outline-dark btn-sm rounded-pill">${color}</button>`;
+                        });
+                        colorHtml += '</div>';
+                        variantsContainer.innerHTML += colorHtml;
+                    }
+
+                    // Size selection
+                    if (sizes.length > 0) {
+                        let sizeHtml = '<h6 class="fw-bold mt-2">Ukuran</h6><div class="d-flex flex-wrap gap-2">';
+                        sizes.forEach(size => {
+                            sizeHtml += `<button type="button" class="btn btn-outline-dark btn-sm rounded-pill">${size}</button>`;
+                        });
+                        sizeHtml += '</div>';
+                        variantsContainer.innerHTML += sizeHtml;
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching product details:', error));
     });
 
     // Flash Sale Timer Logic
     const timerElement = document.getElementById('flash-sale-timer');
-    let totalSeconds = 3600; // 1 jam = 3600 detik
+    let totalSeconds = 3600;
 
     function formatTime(sec) {
         const hours = Math.floor(sec / 3600);
@@ -726,15 +772,225 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateTimer() {
         if (totalSeconds < 0) {
-            totalSeconds = 3600; // Reset ke 1 jam
+            totalSeconds = 3600;
         }
-
         timerElement.textContent = formatTime(totalSeconds);
         totalSeconds--;
     }
-
-    // Jalankan timer setiap detik
     setInterval(updateTimer, 1000);
-});
+
+
+        // =============================
+        const chatbotWidget = document.getElementById('chatbotWidget');
+        const openChatbotBtn = document.getElementById('openChatbot');
+        const closeChatbotBtn = document.getElementById('closeChatbot');
+        const chatbotBody = document.getElementById('chatbot-body');
+        const chatbotInputContainer = document.getElementById('chatbot-input-container');
+        const chatbotOptionsContainer = document.getElementById('chatbot-options');
+
+        // Buka chatbot
+        openChatbotBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            chatbotWidget.style.display = 'block';
+            startChatbot();
+        });
+
+        // Tutup chatbot
+        closeChatbotBtn.addEventListener('click', function() {
+            chatbotWidget.style.display = 'none';
+        });
+
+        // Fungsi mulai chat
+        function startChatbot() {
+            chatbotBody.innerHTML = '';
+            chatbotInputContainer.innerHTML = '';
+            chatbotOptionsContainer.innerHTML = '';
+
+            fetch("{{ route('chatbot.show') }}", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderBotMessage(data.reply);
+                renderNameForm();
+            })
+            .catch(error => console.error('Error starting chatbot:', error));
+        }
+
+        function renderNameForm() {
+            chatbotInputContainer.innerHTML = '';
+            chatbotOptionsContainer.innerHTML = '';
+            chatbotInputContainer.style.display = 'block';
+
+            chatbotInputContainer.innerHTML = `
+                <form id="chatbotNameForm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatbot-name-input"
+                               placeholder="Masukkan nama lengkap anda" aria-label="Masukkan nama lengkap anda"
+                               style="border: 1px solid #A34A4A; border-radius: 6px 0 0 6px;">
+                        <button class="btn" type="submit"
+                                style="background-color: #A34A4A; color: white; border-radius: 0 6px 6px 0;">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('chatbotNameForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nameInput = document.getElementById('chatbot-name-input').value.trim();
+                if (nameInput) {
+                    renderUserMessage(nameInput);
+                    sendMessage(nameInput);
+                }
+            });
+        }
+
+        function renderChatForm() {
+            chatbotInputContainer.innerHTML = '';
+            chatbotInputContainer.style.display = 'block';
+            chatbotOptionsContainer.style.display = 'none';
+
+            chatbotInputContainer.innerHTML = `
+                <form id="chatbotForm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatbot-input"
+                               placeholder="Ketik pesan..." aria-label="Ketik pesan..."
+                               style="border: 1px solid #A34A4A; border-radius: 6px 0 0 6px;">
+                        <button class="btn" type="submit" id="chatbot-send-btn"
+                                style="background-color: #A34A4A; color: white; border-radius: 0 6px 6px 0;">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('chatbotForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const userInput = document.getElementById('chatbot-input').value.trim();
+                if (userInput) {
+                    renderUserMessage(userInput);
+                    sendMessage(userInput);
+                }
+            });
+        }
+
+        function renderBotMessage(message) {
+            const botMessageHtml = `
+                <div style="display:flex; margin-bottom:12px;">
+                    <div style="width:30px; height:30px; background-color:#A34A4A; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:8px; flex-shrink:0;">
+                        <i class="fas fa-robot text-white" style="font-size:14px;"></i>
+                    </div>
+                    <div style="
+                        background-color:#f1f0f0;
+                        color:#000;
+                        padding:10px 14px;
+                        border-radius:12px;
+                        max-width:80%;
+                        font-size:14px;
+                        ">
+                        ${message.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `;
+            chatbotBody.innerHTML += botMessageHtml;
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function renderUserMessage(message) {
+            const userMessageHtml = `
+                <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+                    <div style="
+                        background-color:#A34A4A;
+                        color:#fff;
+                        padding:10px 14px;
+                        border-radius:12px;
+                        max-width:80%;
+                        font-size:14px;
+                        ">
+                        ${message}
+                    </div>
+                    <div style="width:30px; height:30px; background-color:#A34A4A; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left:8px; flex-shrink:0;">
+                        <i class="fas fa-user text-white" style="font-size:14px;"></i>
+                    </div>
+                </div>
+            `;
+            chatbotBody.innerHTML += userMessageHtml;
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        function renderOptions(options) {
+            let optionsHtml = '';
+            options.forEach(option => {
+                const value = option.id || option;
+                const name = option.name || option;
+                const url = option.url || '';
+
+                const dataAttribute = url ? `data-url="${url}"` : '';
+                const btnClass = value === 'whatsapp_link' ? 'btn-success' : 'btn-outline-primary';
+
+                optionsHtml += `
+                    <button class="btn ${btnClass} chatbot-option-btn"
+                            data-value="${value}" ${dataAttribute}
+                            style="font-size:12px; padding:6px 12px; border-radius:6px;">
+                        ${name}
+                    </button>`;
+            });
+            chatbotOptionsContainer.innerHTML = optionsHtml;
+            chatbotOptionsContainer.style.display = 'flex';
+
+            document.querySelectorAll('.chatbot-option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    if (url) {
+                        window.open(url, '_blank');
+                    } else {
+                        const value = this.dataset.value;
+                        const name = this.textContent.trim();
+                        renderUserMessage(name);
+                        sendMessage(value);
+                    }
+                });
+            });
+        }
+
+        function sendMessage(input) {
+            chatbotInputContainer.style.display = 'none';
+            chatbotOptionsContainer.style.display = 'none';
+
+            fetch("{{ route('chatbot.handle') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ input: input })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                renderBotMessage(data.reply);
+                chatbotOptionsContainer.innerHTML = '';
+                if (data.options && data.options.length > 0) {
+                    renderOptions(data.options);
+                } else {
+                    renderChatForm();
+                }
+            })
+            .catch(error => {
+                console.error('Error handling message:', error);
+                renderBotMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
+                renderChatForm();
+            });
+        }
+    });
 </script>
 @endpush

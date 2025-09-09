@@ -1,4 +1,14 @@
 <!-- Navbar -->
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
 <nav class="main-header navbar navbar-expand navbar-secondary-dark navbar-light bg-white">
     <!-- Left navbar links -->
     <ul class="navbar-nav">

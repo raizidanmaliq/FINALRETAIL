@@ -74,9 +74,21 @@
                 @endforeach
             </div>
 
-            <button type="button" class="btn btn-primary my-3" id="add-product-btn">Tambah Produk</button>
-            <br>
-            <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+            <button type="button" id="add-product-btn" class="btn btn-dark btn-sm mt-3">
+    <i class="fa fa-plus"></i> Tambah Produk
+</button>
+
+
+
+            <div class="card-footer text-right">
+    <button type="submit" class="btn btn-danger"
+        style="background-color:#9B4141; border-color:#9B4141; color:#fff;">
+        <i class="la la-check-square-o"></i> Simpan
+    </button>
+</div>
+
+
+
         </form>
     </article>
 </section>
@@ -87,7 +99,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const productList = document.getElementById('product-list');
         const addProductBtn = document.getElementById('add-product-btn');
-        let productIndex = {{ $purchaseOrder->details->count() }}; // Mulai dari jumlah produk yang sudah ada
+        let productIndex = {{ $purchaseOrder->details->count() }}; // mulai dari jumlah produk yang sudah ada
 
         function addProductRow() {
             const newRow = document.createElement('div');
@@ -107,10 +119,13 @@
                 <div class="col-md-3">
                     <input type="number" name="products[${productIndex}][unit_price]" class="form-control" placeholder="Harga Unit" step="0.01" required>
                 </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-danger remove-product"><i class="fa fa-trash"></i></button>
-                </div>
-            `;
+                 <div class="col-md-1">
+        <button type="button" class="btn btn-danger remove-product">
+            <i class="fa fa-trash"></i>
+        </button>
+    </div>
+`;
+
             productList.appendChild(newRow);
             productIndex++;
         }
@@ -118,7 +133,7 @@
         addProductBtn.addEventListener('click', addProductRow);
 
         productList.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-product')) {
+            if (e.target.classList.contains('remove-product') || e.target.closest('.remove-product')) {
                 e.target.closest('.product-item').remove();
             }
         });

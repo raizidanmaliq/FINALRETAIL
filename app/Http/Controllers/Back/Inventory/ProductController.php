@@ -12,6 +12,7 @@ use App\Http\Requests\Inventory\AddStockRequest;
 use App\Http\Requests\Inventory\CorrectStockRequest;
 use Illuminate\Http\Request;
 use App\Helpers\ImageHelpers;
+use Illuminate\Http\RedirectResponse; // Tambahkan ini
 
 class ProductController extends Controller
 {
@@ -30,25 +31,41 @@ class ProductController extends Controller
         return view('back.inventory.products.index', compact('categories'));
     }
 
+    /**
+     * Menampilkan form untuk mengedit produk.
+     * Mengambil data produk, kategori, varian, dan gambar.
+     * @param Product $product
+     * @return \Illuminate\View\View
+     */
     public function edit(Product $product)
     {
         $categories = ProductCategory::all();
-        return view('back.inventory.products.edit', compact('product', 'categories'));
+        $genders = ['Pria', 'Wanita', 'Unisex'];
+
+        // Ambil data varian dan gambar yang sudah ada
+        $product->load('variants', 'images');
+
+        // Untuk mengisi form, kelompokkan varian berdasarkan warna dan ukuran
+        $colors = $product->variants->pluck('color')->unique()->values();
+        $sizes = $product->variants->pluck('size')->unique()->values();
+
+        return view('back.inventory.products.edit', compact('product', 'categories', 'genders', 'colors', 'sizes'));
     }
 
-    public function update(UpdateProductMasterRequest $request, Product $product)
+    /**
+     * Memperbarui produk yang sudah ada.
+     * Mengelola pembaruan data dasar, varian, dan gambar.
+     * @param UpdateProductMasterRequest $request
+     * @param Product $product
+     * @return RedirectResponse
+     */
+    public function update(UpdateProductMasterRequest $request, Product $product): RedirectResponse
     {
-        $imageHelper = new ImageHelpers('back_assets/img/products/');
-        $data = $request->validated();
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $imageHelper->updateImage($request, 'image', $product->image);
-        }
-
-        $product->update($data);
+        // Panggil service untuk menangani logika pembaruan
+        $this->productService->updateProduct($request, $product);
 
         return redirect()->route('admin.inventory.products.index')
-        ->with('success', 'Data produk berhasil diperbarui.');
+            ->with('success', 'Data produk berhasil diperbarui.');
     }
 
     /**

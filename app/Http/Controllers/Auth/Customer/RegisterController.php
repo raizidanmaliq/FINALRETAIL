@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -16,6 +15,11 @@ class RegisterController extends Controller
 
     public function store(Request $request)
     {
+        // 🔹 Tambah pesan khusus jika email sudah terdaftar
+        if (Customer::where('email', $request->email)->exists()) {
+            return back()->withInput()->with('error', 'Email sudah terdaftar, silakan gunakan email lain.');
+        }
+
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:customers',
@@ -33,6 +37,6 @@ class RegisterController extends Controller
         ]);
 
         return redirect()->route('customer.auth.login.index')
-                         ->with('success', 'Berhasil mendaftar menjadi customer, silakan login.');
+                         ->with('registered', true);
     }
 }

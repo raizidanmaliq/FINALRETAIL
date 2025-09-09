@@ -96,10 +96,12 @@
                     @endif
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-success float-right">
-                        <i class="la la-check-square-o"></i> Simpan
-                    </button>
-                </div>
+    <button type="submit" class="btn btn-danger float-right"
+            style="background-color: #9B4141; border-color: #9B4141; color:#fff;">
+        <i class="la la-check-square-o"></i> Simpan
+    </button>
+</div>
+
             </div>
         </form>
     </div>

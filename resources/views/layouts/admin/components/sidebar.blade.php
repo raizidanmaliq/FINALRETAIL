@@ -1,5 +1,5 @@
 <aside class="main-sidebar sidebar-dark-secondary elevation-4" style="background-color: #9B4141;">
-    <a href="#!" class="brand-link d-flex justify-content-center">
+    <a href="{{ url('/') }}" class="brand-link d-flex justify-content-center">
         <span class="brand-text font-weight-light text-white">Ahlinya Retail</span>
     </a>
 

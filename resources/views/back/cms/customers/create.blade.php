@@ -57,7 +57,13 @@
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <div class="card-footer">
+    <button type="submit" class="btn btn-danger float-right"
+            style="background-color:#9B4141; border-color:#9B4141; color:#fff;">
+        <i class="la la-check-square-o"></i> Simpan
+    </button>
+</div>
+
             </form>
         </div>
     </div>

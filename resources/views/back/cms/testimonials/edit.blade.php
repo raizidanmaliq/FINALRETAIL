@@ -41,6 +41,18 @@
                             </select>
                         </div>
 
+                        {{-- Tambahan --}}
+                        <div class="form-group col-md-6">
+                            <label for="order_date">Tanggal Pemesanan</label>
+                            <input type="date" name="order_date" value="{{ $testimonial->order_date }}" class="form-control">
+                        </div>
+
+                        {{-- Tambahan --}}
+                        <div class="form-group col-md-6">
+                            <label for="product_name">Nama Produk</label>
+                            <input type="text" name="product_name" value="{{ $testimonial->product_name }}" class="form-control">
+                        </div>
+
                         <div class="form-group col-md-6">
                             <label for="customer_photo">Foto Pelanggan</label>
                             <input type="file" name="customer_photo" class="form-control">
@@ -57,7 +69,8 @@
                 </div>
 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-success float-right">
+                    <button type="submit" class="btn btn-danger float-right"
+                        style="background-color: #9B4141; border-color: #9B4141; color:#fff;">
                         <i class="la la-check-square-o"></i> Simpan
                     </button>
                 </div>

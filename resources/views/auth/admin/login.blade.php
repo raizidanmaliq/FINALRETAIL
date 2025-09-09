@@ -1,11 +1,21 @@
 @extends('layouts.auth.common.app')
 
-@section('content')
+@push('css')
+<style>
+    /*
+      Aturan CSS ini menimpa font default AdminLTE.
+      Poppins digunakan di seluruh halaman, termasuk form dan tombol.
+      !important memastikan aturan ini diprioritaskan.
+    */
+    body {
+        font-family: 'Poppins', sans-serif !important;
+    }
+</style>
+@endpush
 
-  <!-- /.login-logo -->
+@section('content')
   <div class="card rounded">
     <div class="card-body rounded login-card-body">
-
       <form method="POST" action="{{ route('admin.login') }}">
         @csrf
         <div class="input-group mb-3">
@@ -35,16 +45,14 @@
           @enderror
         </div>
         <div class="row justify-content-end">
-
-          <!-- /.col -->
           <div class="col-12">
-            <button type="submit" class="btn btn-success btn-block">Sign In</button>
+            <button type="submit" class="btn btn-block" style="background:#A34A4A; color:white;">
+    Sign In
+</button>
+
           </div>
-          <!-- /.col -->
         </div>
       </form>
-      <!-- /.social-auth-links -->
     </div>
-    <!-- /.login-card-body -->
   </div>
 @endsection

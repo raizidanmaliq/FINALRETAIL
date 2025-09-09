@@ -27,7 +27,7 @@ class CustomerOrderController extends Controller
     public function create()
     {
         $customers = Customer::all();
-        $products = Product::all();
+        $products = Product::with('variants')->get();
         return view('back.cms.customer-orders.create', compact('customers', 'products'));
     }
 
@@ -43,29 +43,23 @@ class CustomerOrderController extends Controller
 
     public function show(Order $order)
     {
-        // Memuat relasi yang diperlukan untuk tampilan detail
         $order->load(['customer', 'items.product', 'payment']);
-
-        // Mengembalikan view Blade, bukan JSON
         return view('back.cms.customer-orders.show', compact('order'));
     }
 
-    public function edit($id)
+    public function edit(Order $customer_order)
     {
-        $order = Order::findOrFail($id);
-        $order->load(['items.product']);
+        // Variabel yang dikirimkan ke view harus sama dengan parameter metode
+        $customer_order->load(['items.product', 'payment']);
         $customers = Customer::all();
-        $products = Product::all();
-        return view('back.cms.customer-orders.edit', compact('order', 'customers', 'products'));
+        $products = Product::with('variants')->get();
+        // Mengubah nama variabel dari $order menjadi $customer_order di compact
+        return view('back.cms.customer-orders.edit', compact('customer_order', 'customers', 'products'));
     }
 
     public function update(Request $request, Order $customer_order)
     {
         try {
-            // Hapus baris di bawah ini karenaverified_by dan verified_at tidak ada di skema
-            // $customer_order->verified_by = auth()->user()->id;
-            // $customer_order->verified_at = now();
-
             $this->customerOrderService->update($customer_order, $request);
             return redirect()->route('admin.cms.customer-orders.index')->with('success', 'Pesanan pelanggan berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -90,14 +84,26 @@ class CustomerOrderController extends Controller
     }
 
     public function exportPdf(Order $order)
-{
-    // Muat relasi customer dan items.product
-    $order->load(['customer', 'items.product']);
+    {
+        $order->load(['customer', 'items.product']);
+        $pdf = Pdf::loadView('back.cms.customer-orders.pdf', compact('order'));
+        return $pdf->download('pesanan-' . $order->order_code . '.pdf');
+    }
 
-    // Tentukan view yang akan diubah menjadi PDF
-    $pdf = Pdf::loadView('back.cms.customer-orders.pdf', compact('order'));
+    /**
+     * Get product variants (colors and sizes) by product ID.
+     *
+     * @param \App\Models\Inventory\Product $product
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProductVariants(Product $product)
+    {
+        $colors = $product->variants->pluck('color')->unique()->values();
+        $sizes = $product->variants->pluck('size')->unique()->values();
 
-    // Unduh file PDF dengan nama yang relevan
-    return $pdf->download('pesanan-' . $order->order_code . '.pdf');
-}
+        return response()->json([
+            'colors' => $colors,
+            'sizes' => $sizes,
+        ]);
+    }
 }

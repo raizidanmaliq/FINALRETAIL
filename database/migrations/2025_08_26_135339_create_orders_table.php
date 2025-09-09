@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade'); // TAMBAHKAN ->nullable()
             $table->string('order_code')->unique();
             $table->decimal('total_price', 15, 2);
-            $table->string('shipping_address');
-            $table->string('order_status')->default('pending'); // dari enum ke string
+            $table->string('receiver_name');
+            $table->string('receiver_phone')->nullable();
+            $table->string('receiver_email')->nullable();
+            $table->text('receiver_address');
+            $table->string('order_status')->default('pending');
             $table->timestamps();
         });
     }

@@ -44,16 +44,23 @@
                 <hr>
 
                 <h4>Detail Produk</h4>
-                <div id="product-list">
-                    </div>
-                <button type="button" id="add-product-btn" class="btn btn-info mt-3"><i class="fa fa-plus"></i> Tambah Produk</button>
+                <div id="product-list"></div>
+
+                <button type="button" id="add-product-btn" class="btn btn-dark btn-sm mt-3">
+    <i class="fa fa-plus"></i> Tambah Produk
+</button>
+
+
             </div>
 
-            <div class="card-footer">
-                <button type="submit" class="btn btn-success float-right">
-                    <i class="la la-check-square-o"></i> Simpan
-                </button>
-            </div>
+            <div class="card-footer text-right">
+    <button type="submit" class="btn btn-danger float-right"
+        style="background-color:#9B4141; border-color:#9B4141; color:#fff;">
+    <i class="la la-check-square-o"></i> Simpan
+</button>
+
+</div>
+
         </div>
     </form>
 </div>
@@ -84,7 +91,9 @@
                         <input type="number" name="products[${productIndex}][unit_price]" class="form-control" min="0" required>
                     </div>
                     <div class="form-group col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger remove-product-btn w-100"><i class="fa fa-trash"></i> Hapus</button>
+                        <button type="button" class="btn btn-danger remove-product-btn w-100">
+                            <i class="fa fa-trash"></i> Hapus
+                        </button>
                     </div>
                 </div>
             `;
