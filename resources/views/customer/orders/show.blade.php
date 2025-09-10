@@ -139,10 +139,12 @@
             </div>
             <div class="modal-body text-center bg-light">
                 @if($order->payment && $order->payment->proof)
-                    <img src="{{ asset($order->payment->proof) }}" alt="Bukti Pembayaran" class="img-fluid rounded shadow-sm">
-                @else
-                    <p class="text-danger">Bukti pembayaran tidak ditemukan.</p>
-                @endif
+    <img src="{{ asset($order->payment->proof) }}"
+         alt="Bukti Pembayaran"
+         class="img-fluid rounded shadow-sm">
+@else
+    <p class="text-danger">Bukti pembayaran tidak ditemukan.</p>
+@endif
             </div>
         </div>
     </div>

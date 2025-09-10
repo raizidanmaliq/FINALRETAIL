@@ -72,9 +72,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::match(['get', 'post'], 'checkout/prepare', [CheckoutController::class, 'prepare'])->name('checkout.prepare');
         Route::post('checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-        Route::post('/orders/{order}/upload', [OrderController::class, 'uploadPayment'])->name('orders.upload_payment');
-        Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/upload', [OrderController::class, 'uploadPayment'])->name('orders.upload_payment');
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     });
 });
 // ... (bagian bawah kode rute Anda)

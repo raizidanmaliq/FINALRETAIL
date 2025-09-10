@@ -6,17 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Customer;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
 class OrderController extends Controller
 {
+    /**
+     * Tampilkan daftar semua pesanan milik customer yang login
+     */
     public function index()
     {
-        $orders = auth()->guard('customer')->user()
-            ->orders()
+        $customer = auth()->guard('customer')->user();
+
+        $orders = $customer->orders()
             ->with('items.product', 'payment')
             ->latest()
             ->get();
@@ -24,85 +26,89 @@ class OrderController extends Controller
         return view('customer.orders.index', compact('orders'));
     }
 
-    // Method baru untuk menampilkan satu pesanan
-    public function show(Order $order)
+    /**
+     * Tampilkan detail 1 pesanan
+     */
+    public function show($id)
     {
-        // Pastikan pengguna yang diautentikasi adalah pemilik pesanan ini
-        if ($order->customer_id !== auth()->guard('customer')->user()->id) {
-            abort(403);
-        }
+        $customer = auth()->guard('customer')->user();
 
-        $order->load('items.product', 'payment');
+        $order = $customer->orders()
+            ->with('items.product', 'payment')
+            ->findOrFail($id);
 
         return view('customer.orders.show', compact('order'));
     }
 
-    public function uploadPayment(Request $request, Order $order)
+    /**
+     * Upload bukti pembayaran
+     */
+    public function uploadPayment(Request $request, $id)
     {
-        // Pastikan pengguna yang diautentikasi adalah pemilik pesanan ini
-        if ($order->customer_id !== auth()->guard('customer')->user()->id) {
-            abort(403);
-        }
+        $customer = auth()->guard('customer')->user();
 
-        // Validasi input, hapus COD
+        // Pastikan pesanan milik customer ini
+        $order = $customer->orders()->findOrFail($id);
+
+        // Validasi input (hapus opsi COD)
         $request->validate([
-            'payment_method' => 'required|in:bank_transfer,ewallet',
-            'payer_name' => 'required|string|max:255',
-            'payment_date' => 'required|date',
+            'payment_method'   => 'required|in:bank_transfer,ewallet',
+            'payer_name'       => 'required|string|max:255',
+            'payment_date'     => 'required|date',
             'proof_of_payment' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('proof_of_payment')) {
-            // Definisikan path penyimpanan yang sama dengan founder
+            // Path penyimpanan (public/back_assets/img/cms/payments)
             $storagePath = 'back_assets/img/cms/payments/';
-
-            // Simpan file ke public/back_assets/img/cms/payments
             $proofPath = $request->file('proof_of_payment')->move(
                 public_path($storagePath),
                 $request->file('proof_of_payment')->hashName()
             );
 
-            // Path yang akan disimpan di database
             $databasePath = $storagePath . basename($proofPath);
 
-            // Temukan atau buat record pembayaran untuk pesanan ini
+            // Temukan atau buat record pembayaran
             $payment = $order->payment()->firstOrCreate(['order_id' => $order->id]);
 
-            // Perbarui record pembayaran dengan data baru
-            // Hapus status
+            // Update data pembayaran
             $payment->update([
-                'amount' => $order->total_price,
+                'amount'         => $order->total_price,
                 'payment_method' => $request->payment_method,
-                'payer_name' => $request->payer_name,
-                'payment_date' => $request->payment_date,
-                'proof' => $databasePath, // ATRIBUT DIUBAH MENJADI 'proof'
+                'payer_name'     => $request->payer_name,
+                'payment_date'   => $request->payment_date,
+                'proof'          => $databasePath,
             ]);
 
-            // Perbarui status pesanan menjadi pending
-            // Hapus payment_status
+            // Update status pesanan
             $order->update([
                 'order_status' => 'pending',
             ]);
 
             return redirect()
-                ->route('customer.orders.show', $order)
+                ->route('customer.orders.show', $order->id)
                 ->with('success', 'Bukti pembayaran berhasil diunggah. Pesanan akan segera diproses setelah diverifikasi.');
         }
 
         return back()->with('error', 'Upload bukti pembayaran gagal.');
     }
 
+    /**
+     * Generate & tampilkan invoice PDF
+     */
     public function invoice($id)
     {
         $customer = auth()->guard('customer')->user();
+
         $order = $customer->orders()
             ->with(['items.product', 'payment'])
             ->findOrFail($id);
 
-        $pdf = PDF::loadView('customer.orders.invoice', compact('order','customer'))
-                 ->setPaper('A4');
+        $pdf = PDF::loadView('customer.orders.invoice', compact('order', 'customer'))
+            ->setPaper('A4');
 
-        return $pdf->stream('invoice-'.$order->id.'.pdf');
-        // kalau mau langsung download: ->download('invoice-'.$order->id.'.pdf');
+        return $pdf->stream('invoice-' . $order->id . '.pdf');
+        // Kalau mau auto download:
+        // return $pdf->download('invoice-' . $order->id . '.pdf');
     }
 }
