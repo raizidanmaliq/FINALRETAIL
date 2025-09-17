@@ -8,9 +8,7 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">
-                    <a href="{{ route('admin.inventory.dashboard') }}">Stok</a>
-                </li>
+
                 <li class="breadcrumb-item active">Daftar Produk</li>
             </ol>
         </div>
@@ -127,7 +125,7 @@
                         <input type="text" class="form-control" id="correct_stock_current" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="correct_stock_new">Input Stok Fisik Baru</label>
+                        <label for="correct_stock_new">Stok Gudang</label>
                         <input type="number" name="stock" id="correct_stock_new" class="form-control" min="0" required>
                     </div>
                     <div class="form-group">

@@ -3,10 +3,7 @@
 @section('content')
 
 <div class="container mt-4 mb-5">
-    <h5 class="fw-bold mb-4">Keranjang Belanja</h5> <!-- Tambah margin bottom -->
-
-
-    @if($cartItems->isNotEmpty())
+    <h5 class="fw-bold mb-4">Keranjang Belanja</h5> @if($cartItems->isNotEmpty())
     <form id="checkoutForm" action="{{ route('customer.checkout.prepare') }}" method="POST">
         @csrf
         <div class="row">
@@ -16,13 +13,12 @@
                         <thead class="border-bottom" style="border-color: #A34A4A !important;">
                             <tr>
                                 <th class="align-middle ps-3" width="5%">
-    <input type="checkbox" id="selectAll">
-</th>
-
-                                <th scope="col" class="ps-3">Produk</th> <!-- Tambah padding kiri -->
-                                <th scope="col" class="text-end pe-3">Harga</th> <!-- Tambah padding kanan -->
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th scope="col" class="ps-3">Produk</th>
+                                <th scope="col" class="text-end pe-3">Harga</th>
                                 <th scope="col" class="text-center">Kuantitas</th>
-                                <th scope="col" class="text-end pe-3">Total</th> <!-- Tambah padding kanan -->
+                                <th scope="col" class="text-end pe-3">Total</th>
                                 <th scope="col" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -44,32 +40,32 @@
                                     }
                                 @endphp
                                 <tr id="item-row-{{ $item->id }}" class="border-bottom" style="border-color: #A34A4A !important;">
-                                    <td class="align-middle ps-3"> <!-- Tambah padding kiri dan align middle -->
+                                    <td class="align-middle ps-3">
                                         <input type="checkbox"
-                                               name="cart_ids[]"
-                                               value="{{ $item->id }}"
-                                               class="cart-checkbox"
-                                               data-price="{{ $itemTotal }}"
-                                               data-original-price="{{ $itemPrice }}">
+                                            name="cart_ids[]"
+                                            value="{{ $item->id }}"
+                                            class="cart-checkbox"
+                                            data-price="{{ $itemTotal }}"
+                                            data-original-price="{{ $itemPrice }}">
                                     </td>
-                                    <td class="align-middle"> <!-- Ubah ke align middle -->
-                                        <div class="d-flex align-items-center"> <!-- Ubah ke align items center -->
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
                                             <img src="{{ $imagePath }}"
                                                  alt="{{ $item->product->name ?? $item->product_name ?? '' }}"
                                                  class="img-fluid rounded me-3"
                                                  style="width:80px; height:80px; object-fit:cover;"
                                                  onerror="this.src='{{ asset('images/no-image.png') }}'">
                                             <div>
-                                                <h6 class="mb-2 fw-bold">{{ $item->product->name ?? $item->product_name ?? '' }}</h6> <!-- Tambah font weight bold dan margin bottom -->
-                                                <div class="mb-1"><small>Ukuran: {{ $item->variant->size ?? $item->size ?? '-' }}</small></div> <!-- Tambah margin bottom -->
+                                                <h6 class="mb-2 fw-bold">{{ $item->product->name ?? $item->product_name ?? '' }}</h6>
+                                                <div class="mb-1"><small>Ukuran: {{ $item->variant->size ?? $item->size ?? '-' }}</small></div>
                                                 <div><small>Warna: {{ $item->variant->color ?? $item->color ?? '-' }}</small></div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="align-middle text-end pe-3"> <!-- Tambah padding kanan dan align middle -->
-                                        <div class="fw-medium">Rp {{ number_format($itemPrice, 0, ',', '.') }}</div> <!-- Tambah font weight -->
+                                    <td class="align-middle text-end pe-3">
+                                        <div class="fw-medium">Rp {{ number_format($itemPrice, 0, ',', '.') }}</div>
                                     </td>
-                                    <td class="align-middle text-center"> <!-- Ubah ke align middle -->
+                                    <td class="align-middle text-center">
                                         <div class="input-group input-group-sm quantity-control mx-auto" style="width:120px;">
                                             <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="decrease" data-item-id="{{ $item->id }}"><i class="fas fa-minus"></i></button>
                                             <input type="number"
@@ -81,10 +77,10 @@
                                             <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="increase" data-item-id="{{ $item->id }}"><i class="fas fa-plus"></i></button>
                                         </div>
                                     </td>
-                                    <td class="fw-bold align-middle text-end pe-3" id="total-{{ $item->id }}"> <!-- Tambah padding kanan dan align middle -->
+                                    <td class="fw-bold align-middle text-end pe-3" id="total-{{ $item->id }}">
                                         Rp {{ number_format($itemTotal, 0, ',', '.') }}
                                     </td>
-                                    <td class="align-middle text-center"> <!-- Ubah ke align middle -->
+                                    <td class="align-middle text-center">
                                         <button type="button" class="btn btn-sm p-0" onclick="confirmDelete('{{ $item->id }}')" style="color: #A34A4A;">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
@@ -94,33 +90,33 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-top" style="border-color: #A34A4A !important;">
-                                <td colspan="4" class="text-end fw-bold py-3 pe-3">Total untuk Produk Dipilih</td> <!-- Tambah padding kanan -->
-                                <td colspan="2" id="selected-total" class="fw-bold text-end py-3 pe-3"><strong>Rp 0</strong></td> <!-- Tambah padding kanan -->
+                                <td colspan="4" class="text-end fw-bold py-3 pe-3">Total untuk Produk Dipilih</td>
+                                <td colspan="2" id="selected-total" class="fw-bold text-end py-3 pe-3"><strong>Rp 0</strong></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
             <div class="col-12 col-lg-4 mt-4 mt-lg-0">
-    <div class="border p-4 rounded bg-light" style="position: sticky; top: 20px;">
-        <h5 class="mb-3">
-            <strong>Subtotal (Produk Dipilih)</strong>
-        </h5>
-        <h4 class="fw-bold mb-3">
-            Rp <span id="cart-subtotal">0</span>
-        </h4>
-        <p class="text-muted small mb-3">Pajak dan biaya pengiriman akan dihitung di halaman selanjutnya.</p>
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn w-100" id="checkoutBtn" style="background-color: #A34A4A; color: white; border: none;">
-                <i class="fas fa-shopping-cart me-2"></i> Pesan Sekarang
-            </button>
+                <div class="border p-4 rounded bg-light" style="position: sticky; top: 20px;">
+                    <h5 class="mb-3">
+                        <strong>Subtotal (Produk Dipilih)</strong>
+                    </h5>
+                    <h4 class="fw-bold mb-3">
+                        Rp <span id="cart-subtotal">0</span>
+                    </h4>
+                    <p class="text-muted small mb-3">Pajak dan biaya pengiriman akan dihitung di halaman selanjutnya.</p>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn w-100" id="checkoutBtn" style="background-color: #A34A4A; color: white; border: none;">
+                            <i class="fas fa-shopping-cart me-2"></i> Pesan Sekarang
+                        </button>
 
-            <a href="{{ route('front.catalog.index') }}" class="btn btn-outline-dark w-100">
-                Belanja Lagi
-            </a>
-        </div>
-    </div>
-</div>
+                        <a href="{{ route('front.catalog.index') }}" class="btn btn-outline-dark w-100">
+                            Belanja Lagi
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
     @foreach($cartItems as $item)
@@ -139,12 +135,10 @@
     @endif
 </div>
 
-    <!-- TAMBAHKAN KODE CHATBOT DI SINI -->
-    <!-- Widget Chatbot -->
+{{-- Tambahkan kode chatbot di sini --}}
 <div id="chatbotWidget" class="card shadow"
      style="display:none; width:350px; position:fixed; bottom:120px; right:20px; z-index:1200; border-radius:12px;">
 
-    <!-- Chat Section -->
     <div id="chatbotChat">
         <div class="card-header d-flex justify-content-between align-items-center py-3"
              style="background-color: #A34A4A; color: white; border-top-left-radius:12px; border-top-right-radius:12px;">
@@ -158,8 +152,7 @@
         </div>
         <div class="card-body p-3" id="chatbot-body"
              style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
-            <!-- Pesan chatbot muncul di sini -->
-        </div>
+            </div>
         <div class="card-footer p-3">
             <div id="chatbot-input-container"></div>
             <div id="chatbot-options" class="d-flex flex-wrap gap-2 mt-2"></div>
@@ -167,7 +160,6 @@
     </div>
 </div>
 
-<!-- Ikon WhatsApp -->
 <a href="#" class="btn btn-success rounded-circle position-fixed bottom-0 end-0 m-4 shadow" id="openChatbot"
    style="width: 60px; height: 60px; font-size: 1.5rem; z-index: 1050; display: flex; align-items: center; justify-content: center;">
     <i class="fab fa-whatsapp"></i>
@@ -175,6 +167,7 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+@endsection
 
 @push('js')
 <script>
@@ -237,6 +230,7 @@
                 updateItemTotal(itemId, value);
             });
         });
+
         document.querySelectorAll('.quantity-input').forEach(inp => {
             inp.addEventListener('change', function() {
                 const itemId = this.dataset.itemId;
@@ -305,10 +299,8 @@
 
         updateSelectedTotal();
 
-            // =============================
-    // CHATBOT LOGIC
-    // =============================
-
+        // =============================
+        // CHATBOT LOGIC
         // =============================
         const chatbotWidget = document.getElementById('chatbotWidget');
         const openChatbotBtn = document.getElementById('openChatbot');
@@ -523,5 +515,3 @@
     });
 </script>
 @endpush
-
-@endsection

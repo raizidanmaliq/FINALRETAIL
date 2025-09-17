@@ -40,8 +40,9 @@
             <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
                 <!-- Search -->
                 <form class="d-flex position-relative me-2" style="max-width: 220px;" action="{{ route('front.catalog.index') }}" method="GET">
-                    <input class="form-control form-control-sm rounded-pill border border-danger pe-5"
-                        type="search" placeholder="Search for products" name="search">
+                    <input class="form-control form-control-sm rounded-pill pe-5"
+                        type="search" placeholder="Search for products" name="search"
+                        style="border: 1px solid #A34A4A;">
                     <button class="btn position-absolute top-50 end-0 translate-middle-y me-2 p-0" type="submit"
                         style="background: transparent; border: none;">
                         <i class="fas fa-search text-muted"></i>
@@ -77,9 +78,10 @@
                             <li><a class="dropdown-item" href="{{ url('customer/orders') }}"><i class="fas fa-box me-2 text-muted"></i> Riwayat Pemesanan</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item text-danger" href="#"
+                                <a class="dropdown-item" href="#"
+                                   style="color:#A34A4A;"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    <i class="fas fa-sign-out-alt me-2" style="color:#A34A4A;"></i> Logout
                                 </a>
                             </li>
                         </ul>

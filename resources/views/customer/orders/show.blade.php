@@ -5,8 +5,8 @@
     {{-- Mengubah tampilan tombol kembali agar lebih besar dan sesuai dengan contoh --}}
     <div class="mb-4">
     <a href="{{ route('customer.orders.index') }}"
-       class="d-inline-flex align-items-center text-decoration-none fw-bold"
-       style="color:#A34A4A; font-size:1.25rem;">
+        class="d-inline-flex align-items-center text-decoration-none fw-bold"
+        style="color:#A34A4A; font-size:1.25rem;">
         <i class="fas fa-arrow-left me-2" style="font-size:2.5rem;"></i> Back
     </a>
 </div>
@@ -44,7 +44,8 @@
                 </div>
 
                 <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm border-success" style="border-color: #A34A4A;">
+                    {{-- MENGHAPUS KELAS border-success PADA CARD --}}
+                    <div class="card shadow-sm" style="border-color: #A34A4A;">
                         <div class="card-header text-white" style="background-color: #A34A4A;">
                             <h3 class="card-title h5 mb-0"><i class="fas fa-credit-card me-2"></i> Informasi Pembayaran</h3>
                         </div>
@@ -55,10 +56,20 @@
 
                                 <p><strong>Tanggal Bayar:</strong> {{ \Carbon\Carbon::parse($order->payment->payment_date)->format('d M Y') }}</p>
                                 @if($order->payment->proof)
-                                    <p class="mt-3"><strong>Bukti:</strong>
-                                        <a href="#" class="btn btn-sm text-white" style="background-color: #A34A4A;" data-toggle="modal" data-target="#proofModal">
-                                            <i class="fas fa-eye me-1"></i> Lihat Bukti
-                                        </a>
+                                    <p class="mt-3">
+                                        <strong>Bukti:</strong>
+                                        {{-- MENGATUR UKURAN PRATINJAU GAMBAR JADI 150x150 PIKSEL --}}
+                                        <div class="d-flex flex-column align-items-start">
+                                            <div class="position-relative me-3 mb-2">
+                                                <img src="{{ asset($order->payment->proof) }}"
+                                                     alt="Bukti Pembayaran"
+                                                     class="img-fluid rounded"
+                                                     style="width: 150px; height: 150px; object-fit: cover; border: 1px solid #ddd;">
+                                            </div>
+                                            <a href="{{ asset($order->payment->proof) }}" target="_blank" class="fw-bold text-decoration-none" style="color: #007bff;">
+                                                Lihat Bukti
+                                            </a>
+                                        </div>
                                     </p>
                                 @else
                                     <p class="text-danger"><i class="fas fa-times-circle me-1"></i> Belum ada bukti pembayaran.</p>
@@ -123,28 +134,6 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow">
-            <div class="modal-header text-white" style="background-color: #A34A4A;">
-                <h5 class="modal-title" id="proofModalLabel"><i class="fas fa-image me-1"></i> Bukti Pembayaran</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center bg-light">
-                @if($order->payment && $order->payment->proof)
-    <img src="{{ asset($order->payment->proof) }}"
-         alt="Bukti Pembayaran"
-         class="img-fluid rounded shadow-sm">
-@else
-    <p class="text-danger">Bukti pembayaran tidak ditemukan.</p>
-@endif
             </div>
         </div>
     </div>

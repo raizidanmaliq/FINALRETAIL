@@ -83,12 +83,18 @@ class CustomerOrderController extends Controller
         return $this->customerOrderService->generateDataTables();
     }
 
-    public function exportPdf(Order $order)
-    {
-        $order->load(['customer', 'items.product']);
-        $pdf = Pdf::loadView('back.cms.customer-orders.pdf', compact('order'));
-        return $pdf->download('pesanan-' . $order->order_code . '.pdf');
-    }
+   public function exportPdf(Order $order)
+{
+    // Ambil data order dan relasinya
+    $order->load(['customer', 'items.product']);
+
+    // Buat PDF dari view
+    $pdf = Pdf::loadView('back.cms.customer-orders.pdf', compact('order'));
+
+    // Ganti .download() dengan .stream()
+    // 'pesanan-' . $order->order_code . '.pdf' adalah nama file yang akan ditampilkan di tab browser
+    return $pdf->stream('pesanan-' . $order->order_code . '.pdf');
+}
 
     /**
      * Get product variants (colors and sizes) by product ID.

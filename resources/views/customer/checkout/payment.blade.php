@@ -135,7 +135,7 @@
                 <h5 class="mb-3">
                     <strong>Informasi Pengiriman</strong>
                 </h5>
-                <form action="{{ route('customer.checkout.process') }}" method="POST" enctype="multipart/form-data" id="paymentForm">
+                <form action="{{ route('customer.checkout.process') }}" method="POST" enctype="multipart/form-data" id="paymentForm" novalidate>
                     @csrf
                     @foreach($cartItems as $item)
                         <input type="hidden" name="cart_ids[]" value="{{ $item->id }}">
@@ -143,7 +143,8 @@
 
                     <div class="form-group mb-3">
                         <label for="receiver_name" class="form-label">Nama Penerima <span class="text-danger">*</span></label>
-                        <input type="text" name="receiver_name" id="receiver_name" class="form-control" value="{{ old('receiver_name', auth()->guard('customer')->user()->name) }}" required>
+                        <input type="text" name="receiver_name" id="receiver_name" class="form-control" value="{{ old('receiver_name', auth()->guard('customer')->user()->name) }}">
+                        <div class="invalid-feedback d-block" id="error-receiver_name"></div>
                         @error('receiver_name')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -151,7 +152,8 @@
 
                     <div class="form-group mb-3">
                         <label for="receiver_phone" class="form-label">Telepon Penerima <span class="text-danger">*</span></label>
-                        <input type="tel" name="receiver_phone" id="receiver_phone" class="form-control" value="{{ old('receiver_phone', auth()->guard('customer')->user()->phone) }}" required>
+                        <input type="tel" name="receiver_phone" id="receiver_phone" class="form-control" value="{{ old('receiver_phone', auth()->guard('customer')->user()->phone) }}">
+                        <div class="invalid-feedback d-block" id="error-receiver_phone"></div>
                         @error('receiver_phone')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -159,7 +161,8 @@
 
                     <div class="form-group mb-3">
                         <label for="receiver_email" class="form-label">Email Penerima <span class="text-danger">*</span></label>
-                        <input type="email" name="receiver_email" id="receiver_email" class="form-control" value="{{ old('receiver_email', auth()->guard('customer')->user()->email) }}" required>
+                        <input type="email" name="receiver_email" id="receiver_email" class="form-control" value="{{ old('receiver_email', auth()->guard('customer')->user()->email) }}">
+                        <div class="invalid-feedback d-block" id="error-receiver_email"></div>
                         @error('receiver_email')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -167,7 +170,8 @@
 
                     <div class="form-group mb-3">
                         <label for="receiver_address" class="form-label">Alamat Lengkap Pengiriman <span class="text-danger">*</span></label>
-                        <textarea name="receiver_address" id="receiver_address" class="form-control" rows="3" required>{{ old('receiver_address', auth()->guard('customer')->user()->address ?? '') }}</textarea>
+                        <textarea name="receiver_address" id="receiver_address" class="form-control" rows="3">{{ old('receiver_address', auth()->guard('customer')->user()->address ?? '') }}</textarea>
+                        <div class="invalid-feedback d-block" id="error-receiver_address"></div>
                         @error('receiver_address')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -175,7 +179,8 @@
 
                     <div class="form-group mb-3">
                         <label for="payment_date" class="form-label">Tanggal Pembayaran <span class="text-danger">*</span></label>
-                        <input type="date" name="payment_date" id="payment_date" class="form-control" value="{{ old('payment_date', date('Y-m-d')) }}" required>
+                        <input type="date" name="payment_date" id="payment_date" class="form-control" value="{{ old('payment_date', date('Y-m-d')) }}">
+                        <div class="invalid-feedback d-block" id="error-payment_date"></div>
                         @error('payment_date')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -183,11 +188,12 @@
 
                     <div class="form-group mb-3">
                         <label for="payment_method" class="form-label">Metode Pembayaran <span class="text-danger">*</span></label>
-                        <select name="payment_method" id="payment_method" class="form-control" required>
+                        <select name="payment_method" id="payment_method" class="form-control">
                             <option value="">Pilih Metode Pembayaran</option>
                             <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Transfer Bank</option>
                             <option value="ewallet" {{ old('payment_method') == 'ewallet' ? 'selected' : '' }}>E-wallet</option>
                         </select>
+                        <div class="invalid-feedback d-block" id="error-payment_method"></div>
                         @error('payment_method')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -195,8 +201,9 @@
 
                     <div class="form-group mb-3" id="proofUploadSection">
                         <label for="proof_of_payment" class="form-label">Bukti Transfer/Pembayaran <span class="text-danger">*</span></label>
-                        <input type="file" name="proof_of_payment" id="proof_of_payment" class="form-control" accept="image/*" required>
+                        <input type="file" name="proof_of_payment" id="proof_of_payment" class="form-control" accept="image/*">
                         <small class="form-text text-muted">Format: JPEG, PNG, JPG, GIF (Maks. 2MB)</small>
+                        <div class="invalid-feedback d-block" id="error-proof_of_payment"></div>
                         @error('proof_of_payment')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -224,26 +231,121 @@
     .form-label {
         font-weight: 500;
     }
+    .is-invalid {
+        border-color: #dc3545 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const paymentMethod = document.getElementById('payment_method');
-        const proofUploadSection = document.getElementById('proofUploadSection');
-        const proofInput = document.getElementById('proof_of_payment');
+        const paymentForm = document.getElementById('paymentForm');
 
-        proofUploadSection.style.display = 'block';
-        proofInput.setAttribute('required', 'required');
+        const fieldNames = {
+            'receiver_name': 'Nama Penerima',
+            'receiver_phone': 'Telepon Penerima',
+            'receiver_email': 'Email Penerima',
+            'receiver_address': 'Alamat Lengkap Pengiriman',
+            'payment_date': 'Tanggal Pembayaran',
+            'payment_method': 'Metode Pembayaran',
+            'proof_of_payment': 'Bukti Pembayaran'
+        };
 
-        document.getElementById('paymentForm').addEventListener('submit', function(e) {
-            const today = new Date().toISOString().split('T')[0];
+        const requiredFields = Object.keys(fieldNames);
+
+        // Fungsi untuk menampilkan pesan error
+        const showError = (fieldId, message) => {
+            const inputElement = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`error-${fieldId}`);
+            if (inputElement && errorElement) {
+                inputElement.classList.add('is-invalid');
+                errorElement.textContent = message;
+                errorElement.style.color = '#dc3545';
+            }
+        };
+
+        // Fungsi untuk menyembunyikan pesan error
+        const hideError = (fieldId) => {
+            const inputElement = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`error-${fieldId}`);
+            if (inputElement && errorElement) {
+                inputElement.classList.remove('is-invalid');
+                errorElement.textContent = '';
+            }
+        };
+
+        // Fungsi untuk memeriksa semua input yang wajib diisi
+        const validateForm = () => {
+            let isValid = true;
+            requiredFields.forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                const fieldName = fieldNames[fieldId];
+
+                // Cek input apakah kosong atau tidak
+                if (input && input.value.trim() === '') {
+                    showError(fieldId, `${fieldName} wajib diisi.`);
+                    isValid = false;
+                } else {
+                    hideError(fieldId);
+                }
+            });
+
+            // Validasi format email sederhana
+            const emailInput = document.getElementById('receiver_email');
+            if (emailInput && emailInput.value.trim() !== '' && !emailInput.value.includes('@')) {
+                showError('receiver_email', 'Format email tidak valid.');
+                isValid = false;
+            }
+
+            // Validasi tanggal
             const paymentDate = document.getElementById('payment_date').value;
+            const today = new Date().toISOString().split('T')[0];
             if (paymentDate > today) {
-                e.preventDefault();
-                alert('Tanggal pembayaran tidak boleh lebih dari hari ini.');
-                return false;
+                showError('payment_date', 'Tanggal pembayaran tidak boleh lebih dari hari ini.');
+                isValid = false;
+            }
+
+            return isValid;
+        };
+
+        // Tambahkan event listener untuk setiap input
+        requiredFields.forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            if (input) {
+                input.addEventListener('input', () => {
+                    if (input.value.trim() !== '') {
+                        hideError(fieldId);
+                    }
+                });
             }
         });
+
+        // Tangani saat form disubmit
+        paymentForm.addEventListener('submit', function(e) {
+            // Hapus atribut 'required' agar tidak memicu validasi browser
+            requiredFields.forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (input) {
+                    input.removeAttribute('required');
+                }
+            });
+
+            if (!validateForm()) {
+                e.preventDefault();
+                // Scroll ke elemen pertama yang tidak valid jika ada
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Tambahkan atribut novalidate ke form agar browser tidak menjalankan validasi default
+        paymentForm.setAttribute('novalidate', '');
     });
 </script>
 @endsection

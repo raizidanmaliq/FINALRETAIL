@@ -370,45 +370,60 @@ Panjang visor  : 7 cm',
 
         // Data Gambar (menggunakan ID produk hardcode dan jalur yang sama)
         $images = [
-            // Kaos Polos (ID 1)
-            ['product_id' => 1, 'image_path' => 'back_assets/img/products/kaos-polos-1.jpg'],
-            ['product_id' => 1, 'image_path' => 'back_assets/img/products/kaos-polos-2.jpg'],
-            // Kemeja Flanel (ID 2)
-            ['product_id' => 2, 'image_path' => 'back_assets/img/products/kemeja-flanel-1.jpg'],
-            ['product_id' => 2, 'image_path' => 'back_assets/img/products/kemeja-flanel-2.jpg'],
-            // Blouse Katun Lengan Balon (ID 3)
-            ['product_id' => 3, 'image_path' => 'back_assets/img/products/blouse-katun-1.jpg'],
-            // Kemeja Oxford Pria (ID 4)
-            ['product_id' => 4, 'image_path' => 'back_assets/img/products/kemeja-oxford-1.jpg'],
-            ['product_id' => 4, 'image_path' => 'back_assets/img/products/kemeja-oxford-2.jpg'],
-            // Celana Jeans Slim Fit Pria (ID 5)
-            ['product_id' => 5, 'image_path' => 'back_assets/img/products/celana-jeans-pria-1.jpg'],
-            ['product_id' => 5, 'image_path' => 'back_assets/img/products/celana-jeans-pria-2.jpg'],
-            // Celana Chino Wanita (ID 6)
-            ['product_id' => 6, 'image_path' => 'back_assets/img/products/celana-chino-wanita-1.jpg'],
-            ['product_id' => 6, 'image_path' => 'back_assets/img/products/celana-chino-wanita-2.jpg'],
-            // Rok Midi Plisket (ID 7)
-            ['product_id' => 7, 'image_path' => 'back_assets/img/products/rok-midi-plisket-1.jpg'],
-            ['product_id' => 7, 'image_path' => 'back_assets/img/products/rok-midi-plisket-2.jpg'],
-            // Jaket Bomber Parasut (ID 8)
-            ['product_id' => 8, 'image_path' => 'back_assets/img/products/jaket-bomber-1.jpg'],
-            ['product_id' => 8, 'image_path' => 'back_assets/img/products/jaket-bomber-2.jpg'],
-            // Cardigan Rajut Oversize (ID 9)
-            ['product_id' => 9, 'image_path' => 'back_assets/img/products/cardigan-rajut-1.jpg'],
-            ['product_id' => 9, 'image_path' => 'back_assets/img/products/cardigan-rajut-2.jpg'],
-            // Blazer Formal Wanita (ID 10)
-            ['product_id' => 10, 'image_path' => 'back_assets/img/products/blazer-formal-1.jpg'],
-            ['product_id' => 10, 'image_path' => 'back_assets/img/products/blazer-formal-2.jpg'],
-            // Tas Selempang Kulit Sintetis (ID 11)
-            ['product_id' => 11, 'image_path' => 'back_assets/img/products/tas-selempang-1.jpg'],
-            ['product_id' => 11, 'image_path' => 'back_assets/img/products/tas-selempang-2.jpg'],
-            // Ikat Pinggang Kulit Pria (ID 12)
-            ['product_id' => 12, 'image_path' => 'back_assets/img/products/ikat-pinggang-1.jpg'],
-            // Topi Baseball Katun (ID 13)
-            ['product_id' => 13, 'image_path' => 'back_assets/img/products/topi-baseball-1.jpg'],
-            // Sneakers Putih Klasik (ID 14)
-            ['product_id' => 14, 'image_path' => 'back_assets/img/products/sneakers-1.jpg'],
-        ];
+    // Kaos Polos (ID 1)
+    ['product_id' => 1, 'image_path' => 'back_assets/img/products/kaos-polos-1.jpg', 'is_video' => 0],
+    ['product_id' => 1, 'image_path' => 'back_assets/img/products/kaos-polos-2.jpg', 'is_video' => 0],
+
+    // Kemeja Flanel (ID 2)
+    ['product_id' => 2, 'image_path' => 'back_assets/img/products/kemeja-flanel-1.jpg', 'is_video' => 0],
+    ['product_id' => 2, 'image_path' => 'back_assets/img/products/kemeja-flanel-2.jpg', 'is_video' => 0],
+    ['product_id' => 2, 'image_path' => 'back_assets/img/products/video-kemeja.mp4', 'is_video' => 1], // video
+
+    // Blouse Katun Lengan Balon (ID 3)
+    ['product_id' => 3, 'image_path' => 'back_assets/img/products/blouse-katun-1.jpg', 'is_video' => 0],
+
+    // Kemeja Oxford Pria (ID 4)
+    ['product_id' => 4, 'image_path' => 'back_assets/img/products/kemeja-oxford-1.jpg', 'is_video' => 0],
+    ['product_id' => 4, 'image_path' => 'back_assets/img/products/kemeja-oxford-2.jpg', 'is_video' => 0],
+
+    // Celana Jeans Slim Fit Pria (ID 5)
+    ['product_id' => 5, 'image_path' => 'back_assets/img/products/celana-jeans-pria-1.jpg', 'is_video' => 0],
+    ['product_id' => 5, 'image_path' => 'back_assets/img/products/celana-jeans-pria-2.jpg', 'is_video' => 0],
+
+    // Celana Chino Wanita (ID 6)
+    ['product_id' => 6, 'image_path' => 'back_assets/img/products/celana-chino-wanita-1.jpg', 'is_video' => 0],
+    ['product_id' => 6, 'image_path' => 'back_assets/img/products/celana-chino-wanita-2.jpg', 'is_video' => 0],
+
+    // Rok Midi Plisket (ID 7)
+    ['product_id' => 7, 'image_path' => 'back_assets/img/products/rok-midi-plisket-1.jpg', 'is_video' => 0],
+    ['product_id' => 7, 'image_path' => 'back_assets/img/products/rok-midi-plisket-2.jpg', 'is_video' => 0],
+
+    // Jaket Bomber Parasut (ID 8)
+    ['product_id' => 8, 'image_path' => 'back_assets/img/products/jaket-bomber-1.jpg', 'is_video' => 0],
+    ['product_id' => 8, 'image_path' => 'back_assets/img/products/jaket-bomber-2.jpg', 'is_video' => 0],
+
+    // Cardigan Rajut Oversize (ID 9)
+    ['product_id' => 9, 'image_path' => 'back_assets/img/products/cardigan-rajut-1.jpg', 'is_video' => 0],
+    ['product_id' => 9, 'image_path' => 'back_assets/img/products/cardigan-rajut-2.jpg', 'is_video' => 0],
+
+    // Blazer Formal Wanita (ID 10)
+    ['product_id' => 10, 'image_path' => 'back_assets/img/products/blazer-formal-1.jpg', 'is_video' => 0],
+    ['product_id' => 10, 'image_path' => 'back_assets/img/products/blazer-formal-2.jpg', 'is_video' => 0],
+
+    // Tas Selempang Kulit Sintetis (ID 11)
+    ['product_id' => 11, 'image_path' => 'back_assets/img/products/tas-selempang-1.jpg', 'is_video' => 0],
+    ['product_id' => 11, 'image_path' => 'back_assets/img/products/tas-selempang-2.jpg', 'is_video' => 0],
+
+    // Ikat Pinggang Kulit Pria (ID 12)
+    ['product_id' => 12, 'image_path' => 'back_assets/img/products/ikat-pinggang-1.jpg', 'is_video' => 0],
+
+    // Topi Baseball Katun (ID 13)
+    ['product_id' => 13, 'image_path' => 'back_assets/img/products/topi-baseball-1.jpg', 'is_video' => 0],
+
+    // Sneakers Putih Klasik (ID 14)
+    ['product_id' => 14, 'image_path' => 'back_assets/img/products/sneakers-1.jpg', 'is_video' => 0],
+];
+
 
         // Memasukkan data ke tabel 'product_images'
         DB::table('product_images')->insert($images);

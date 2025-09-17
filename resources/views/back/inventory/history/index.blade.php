@@ -4,14 +4,12 @@
 <header class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Riwayat Mutasi Stok</h1>
+            <h1>Riwayat Produk</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">
-                    <a href="{{ route('admin.inventory.dashboard') }}">Stok</a>
-                </li>
-                <li class="breadcrumb-item active">Riwayat Mutasi</li>
+
+                <li class="breadcrumb-item active">Riwayat Produk</li>
             </ol>
         </div>
     </div>

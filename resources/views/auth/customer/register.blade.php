@@ -2,11 +2,6 @@
 
 @push('css')
 <style>
-    /*
-      Aturan CSS ini menimpa font default AdminLTE.
-      Poppins digunakan di seluruh halaman, termasuk form dan tombol.
-      !important memastikan aturan ini diprioritaskan.
-    */
     body {
         font-family: 'Poppins', sans-serif !important;
     }
@@ -18,15 +13,16 @@
     <div class="card border rounded-3 shadow-sm w-100" style="max-width: 400px;">
         <div class="card-body p-4">
 
-            <h3 class="text-center fw-bold mb-3" style="color: #A34A4A;">Buat Akun Pelanggan</h3>
-            <p class="text-center text-muted mb-4">
-                Sudah punya akun?
-                <a href="{{ route('customer.auth.login.index') }}" style="color:#A34A4A; font-weight:600;">
-                    Masuk di sini
-                </a>
-            </p>
+            {{-- 🔼 Heading --}}
+            <div class="text-center mb-4">
+                <h3 class="fw-bold mb-1" style="color:#A34A4A;">Daftar Akun</h3>
+                <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                    Lengkapi data berikut untuk mendaftar
+                </p>
+            </div>
 
-            <form action="{{ route('customer.auth.registers.store') }}" method="POST">
+            {{-- Form register --}}
+            <form action="{{ route('customer.auth.registers.store') }}" method="POST" class="text-start">
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Nama Lengkap</label>
@@ -55,13 +51,13 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">Kata Sandi</label>
                     <input type="password" class="form-control" id="password" name="password"
-                           placeholder="••••••••" required>
+                           placeholder="Masukan Password" required>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
                     <input type="password" class="form-control" id="password_confirmation"
-                           name="password_confirmation" placeholder="••••••••" required>
+                           name="password_confirmation" placeholder="Konfirmasi Password" required>
                 </div>
 
                 <div class="d-grid">
@@ -72,6 +68,14 @@
                     </button>
                 </div>
             </form>
+
+            {{-- 🔽 Link ke login --}}
+            <p class="text-center mt-4 mb-0">
+                Sudah punya akun?
+                <a href="{{ route('customer.auth.login.index') }}" style="color:#A34A4A; font-weight:600;">
+                    Masuk di sini
+                </a>
+            </p>
         </div>
     </div>
 </div>

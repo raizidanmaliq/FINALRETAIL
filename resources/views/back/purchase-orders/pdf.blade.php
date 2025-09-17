@@ -21,7 +21,19 @@
     <table class="details-table">
         <tr>
             <th width="20%">Supplier:</th>
-            <td>{{ $po->supplier_name }}</td>
+            <td>{{ $po->supplier->name ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Email Supplier:</th>
+            <td>{{ $po->supplier->email ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Telepon Supplier:</th>
+            <td>{{ $po->supplier->phone ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Alamat Supplier:</th>
+            <td>{{ $po->supplier->address ?? '-' }}</td>
         </tr>
         <tr>
             <th>Tanggal Pemesanan:</th>

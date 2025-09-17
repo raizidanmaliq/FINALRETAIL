@@ -4,14 +4,14 @@
     <header class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Tambah Kategori</h1>
+                <h1>Tambah Kategori Produk</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">
                         <a href="{{ route('admin.cms.product_categories.index') }}">Kategori Produk</a>
                     </li>
-                    <li class="breadcrumb-item active">Tambah Kategori</li>
+                    <li class="breadcrumb-item active">Tambah Kategori Produk</li>
                 </ol>
             </div>
         </div>
@@ -26,21 +26,22 @@
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="name">Nama Kategori</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <label for="name">Nama Kategori <span class="text-danger">*</span></label>
+                            {{-- Hapus atribut required untuk validasi JS terpusat --}}
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror">
                             @error('name')
-                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
+                            <div id="name-error-js" class="invalid-feedback"></div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
-    <button type="submit" class="btn btn-danger float-right"
-            style="background-color:#9B4141; border-color:#9B4141; color:#fff;">
-        <i class="la la-check-square-o"></i> Simpan
-    </button>
-</div>
-
+                    <button type="submit" class="btn btn-danger float-right"
+                            style="background-color:#9B4141; border-color:#9B4141; color:#fff;">
+                        <i class="la la-check-square-o"></i> Simpan
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -49,19 +50,31 @@
 @push('js')
 <script>
     $(document).ready(function() {
-        $('#form-validation').validate({
-            rules: {},
-            errorElement: 'span',
-            errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
+        // Logika validasi sisi klien
+        $('#form-validation').on('submit', function(e) {
+            let isValid = true;
+            const nameInput = $('#name');
+
+            // Hapus error yang sudah ada
+            nameInput.removeClass('is-invalid');
+            $('#name-error-js').text('').hide();
+
+            // Validasi nama tidak boleh kosong
+            if (nameInput.val().trim() === '') {
+                isValid = false;
+                nameInput.addClass('is-invalid');
+                $('#name-error-js').text('Nama kategori tidak boleh kosong.').show();
             }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        // Hapus error saat pengguna mulai mengetik
+        $('#name').on('input', function() {
+            $(this).removeClass('is-invalid');
+            $('#name-error-js').text('').hide();
         });
     });
 </script>

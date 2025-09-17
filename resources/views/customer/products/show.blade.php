@@ -25,19 +25,20 @@
         <div class="col-md-6 d-flex flex-column align-items-center">
             <div class="product-image-main mb-3 text-center"
                  style="width:100%; max-width:500px; height:500px; margin:0 auto; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
-                @if($product->images && count($product->images) > 0)
-                    <img src="{{ asset($product->images->first()->image_path) }}"
-                         alt="{{ $product->name }}"
-                         class="img-fluid main-img"
-                         style="width:100%; height:100%; object-fit:contain; object-position:center;"
-                         id="main-product-image">
-                @else
-                    <img src="{{ asset('images/placeholder.jpg') }}"
-                         alt="{{ $product->name }}"
-                         class="img-fluid main-img"
-                         style="width:100%; height:100%; object-fit:contain; object-position:center;"
-                         id="main-product-image">
-                @endif
+                <div id="main-media-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                    @if($product->images && count($product->images) > 0)
+                        @php
+                            $firstMedia = $product->images->first();
+                        @endphp
+                        @if($firstMedia->is_video)
+                            <video src="{{ asset($firstMedia->image_path) }}" controls class="img-fluid main-media" style="width:100%; height:100%; object-fit:cover; object-position:center;"></video>
+                        @else
+                            <img src="{{ asset($firstMedia->image_path) }}" alt="{{ $product->name }}" class="img-fluid main-media" style="width:100%; height:100%; object-fit:cover; object-position:center;">
+                        @endif
+                    @else
+                        <img src="{{ asset('images/placeholder.jpg') }}" alt="{{ $product->name }}" class="img-fluid main-media" style="width:100%; height:100%; object-fit:contain; object-position:center;">
+                    @endif
+                </div>
             </div>
             @if($product->images && count($product->images) > 1)
                 <div class="position-relative mb-5 mb-md-0">
@@ -50,11 +51,23 @@
                     <div class="product-thumbnails d-flex gap-2 flex-nowrap overflow-auto py-2 px-5"
                          style="scroll-behavior: smooth;">
                         @foreach($product->images as $index => $image)
-                            <img src="{{ asset($image->image_path) }}"
-                                 alt="Thumbnail {{ $index + 1 }}"
-                                 class="img-thumbnail thumbnail-img"
-                                 style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid {{ $index === 0 ? '#A34A4A' : '#ddd' }};"
-                                 data-index="{{ $index }}">
+                            @if($image->is_video)
+                                <div class="img-thumbnail thumbnail-video d-flex align-items-center justify-content-center"
+                                     style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid {{ $index === 0 ? '#A34A4A' : '#ddd' }}; background-color: #f0f0f0;"
+                                     data-path="{{ asset($image->image_path) }}"
+                                     data-index="{{ $index }}"
+                                     data-is-video="true">
+                                    <i class="fas fa-play" style="color: #A34A4A; font-size: 20px;"></i>
+                                </div>
+                            @else
+                                <img src="{{ asset($image->image_path) }}"
+                                     alt="Thumbnail {{ $index + 1 }}"
+                                     class="img-thumbnail thumbnail-img"
+                                     style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid {{ $index === 0 ? '#A34A4A' : '#ddd' }};"
+                                     data-path="{{ asset($image->image_path) }}"
+                                     data-index="{{ $index }}"
+                                     data-is-video="false">
+                            @endif
                         @endforeach
                     </div>
                     <button type="button"
@@ -83,7 +96,7 @@
                                 @foreach($sizes as $size)
                                     <button type="button"
                                             class="btn variant-btn"
-    style="border:1px solid #A34A4A; color:#1E1E1E; border-radius:6px; background-color: white; color: #1E1E1E;"
+                                            style="border:1px solid #A34A4A; color:#1E1E1E; border-radius:6px; background-color: white; color: #1E1E1E;"
                                             data-type="size"
                                             data-value="{{ $size }}">
                                         {{ $size }}
@@ -101,7 +114,7 @@
                                 @foreach($colors as $color)
                                     <button type="button"
                                             class="btn variant-btn"
-    style="border:1px solid #A34A4A; color:#1E1E1E; border-radius:6px; background-color: white; color: #1E1E1E;"
+                                            style="border:1px solid #A34A4A; color:#1E1E1E; border-radius:6px; background-color: white; color: #1E1E1E;"
                                             data-type="color"
                                             data-value="{{ $color }}">
                                         {{ $color }}
@@ -120,11 +133,11 @@
                     </div>
                     <div class="d-flex gap-3 mt-3">
                         <a href="{{ $whatsappUrl }}"
-        class="btn fw-bold flex-fill"
-        style="border:1px solid #A34A4A; background:white; color:#A34A4A; border-radius:0; padding:12px;"
-        target="_blank">
-        Tanyakan Produk Ini
-    </a>
+                           class="btn fw-bold flex-fill"
+                           style="border:1px solid #A34A4A; background:white; color:#A34A4A; border-radius:0; padding:12px;"
+                           target="_blank">
+                            Tanyakan Produk Ini
+                        </a>
                         <button type="submit"
                                 class="btn fw-bold flex-fill text-white"
                                 style="background-color:#A34A4A; border-radius:0; padding:12px;">
@@ -135,68 +148,72 @@
             </div>
         </div>
     </div>
+
     <div class="mt-5">
-        <ul class="nav nav-underline mb-3" id="productTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active fw-bold"
-                        id="home-tab"
-                        data-bs-toggle="tab" data-bs-target="#home"
-                        type="button" role="tab"
-                        aria-controls="home" aria-selected="true">
-                    Home
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold"
-                        id="profile-tab"
-                        data-bs-toggle="tab" data-bs-target="#profile"
-                        type="button" role="tab"
-                        aria-controls="profile" aria-selected="false">
-                    Profile
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold"
-                        id="size-tab"
-                        data-bs-toggle="tab" data-bs-target="#size"
-                        type="button" role="tab"
-                        aria-controls="size" aria-selected="false">
-                    Size Chart
-                </button>
-            </li>
-        </ul>
-        <div class="tab-content border p-3 rounded" id="productTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <h5>Product Detail</h5>
-                {!! nl2br($product->description ?? 'Tidak ada deskripsi.') !!}
+    <ul class="nav nav-underline mb-3" id="productTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold"
+                    id="detail-tab"
+                    data-bs-toggle="tab" data-bs-target="#detail"
+                    type="button" role="tab"
+                    aria-controls="detail" aria-selected="true">
+                Detail
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold"
+                    id="size-tab"
+                    data-bs-toggle="tab" data-bs-target="#size"
+                    type="button" role="tab"
+                    aria-controls="size" aria-selected="false">
+                Size
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content border p-3 rounded" id="productTabContent">
+        {{-- TAB PANE UNTUK DETAIL PRODUK --}}
+        <div class="tab-pane fade show active" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+            <div class="text-start"> {{-- Ganti ke text-start untuk rata kiri --}}
+                <h5 class="fw-bold mb-3">Deskripsi Produk</h5>
+                <div>
+                    {{-- TAMPILKAN DESKRIPSI PRODUK --}}
+                    {!! nl2br($product->description ?? 'Tidak ada deskripsi.') !!}
+                </div>
             </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby('profile-tab')>
-                <h5>Size Details</h5>
-                @if($product->size_details)
-                    {!! nl2br($product->size_details) !!}
+        </div>
+
+        {{-- TAB PANE UNTUK DETAIL UKURAN --}}
+        <div class="tab-pane fade" id="size" role="tabpanel" aria-labelledby="size-tab">
+            <div class="text-start"> {{-- Ganti ke text-start untuk rata kiri --}}
+                <h5 class="fw-bold mb-3">Detail Ukuran</h5>
+                @if($product->size_details || $product->size_chart_image)
+                    {{-- TAMPILKAN TEXT DETAIL UKURAN JIKA ADA --}}
+                    @if($product->size_details)
+                        <div class="mb-3">
+                            {!! nl2br($product->size_details) !!}
+                        </div>
+                    @endif
+
+                    {{-- TAMPILKAN GAMBAR SIZE CHART JIKA ADA --}}
+                    @if($product->size_chart_image)
+                        <div class="mb-3">
+                            <img src="{{ asset($product->size_chart_image) }}"
+                                alt="Size Chart" class="img-fluid rounded">
+                            {{-- Ubah class atau style agar tidak rata tengah --}}
+                        </div>
+                    @endif
                 @else
                     <p>Detail ukuran belum tersedia.</p>
-                @endif
-            </div>
-            <div class="tab-pane fade" id="size" role="tabpanel" aria-labelledby="size-tab">
-                <h5>Size Chart</h5>
-                @if($product->size_chart_image)
-                    <img src="{{ asset($product->size_chart_image) }}"
-                         alt="Size Chart" class="img-fluid rounded">
-                @else
-                    <p>Size chart belum tersedia.</p>
                 @endif
             </div>
         </div>
     </div>
 </div>
+</div>
 
-<!-- TAMBAHKAN KODE CHATBOT DARI SOURCE KEDUA DI SINI -->
-<!-- Widget Chatbot -->
 <div id="chatbotWidget" class="card shadow"
      style="display:none; width:350px; position:fixed; bottom:120px; right:20px; z-index:1200; border-radius:12px;">
 
-    <!-- Chat Section -->
     <div id="chatbotChat">
         <div class="card-header d-flex justify-content-between align-items-center py-3"
              style="background-color: #A34A4A; color: white; border-top-left-radius:12px; border-top-right-radius:12px;">
@@ -210,8 +227,7 @@
         </div>
         <div class="card-body p-3" id="chatbot-body"
              style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
-            <!-- Pesan chatbot muncul di sini -->
-        </div>
+            </div>
         <div class="card-footer p-3">
             <div id="chatbot-input-container"></div>
             <div id="chatbot-options" class="d-flex flex-wrap gap-2 mt-2"></div>
@@ -219,7 +235,6 @@
     </div>
 </div>
 
-<!-- Ikon WhatsApp -->
 <a href="#" class="btn btn-success rounded-circle position-fixed bottom-0 end-0 m-4 shadow" id="openChatbot"
    style="width: 60px; height: 60px; font-size: 1.5rem; z-index: 1050; display: flex; align-items: center; justify-content: center;">
     <i class="fab fa-whatsapp"></i>
@@ -232,11 +247,15 @@
 @push('js')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const variantButtons = document.querySelectorAll('.variant-btn');
-        const mainImage = document.getElementById('main-product-image');
-        const thumbnails = document.querySelectorAll('.thumbnail-img');
+        const mainMediaContainer = document.getElementById('main-media-container');
+        const thumbnails = document.querySelectorAll('.thumbnail-img, .thumbnail-video');
         const btnPrev = document.getElementById('thumb-prev');
         const btnNext = document.getElementById('thumb-next');
+
+        const variantButtons = document.querySelectorAll('.variant-btn');
+        const mainImage = document.getElementById('main-product-image');
+
+
         const tabs = document.querySelectorAll('#productTab .nav-link');
         const addToCartForm = document.getElementById('addToCartForm');
         const validationMessages = document.getElementById('validation-messages');
@@ -280,25 +299,40 @@
         // =============================
         // Gallery Thumbnail
         // =============================
-        if (thumbnails.length > 0 && mainImage) {
+        if (thumbnails.length > 0 && mainMediaContainer) {
             let currentIndex = 0;
-            function showImage(index) {
+
+            function showMedia(index) {
                 if (index < 0) index = thumbnails.length - 1;
                 if (index >= thumbnails.length) index = 0;
                 currentIndex = index;
-                mainImage.src = thumbnails[currentIndex].src;
+
+                const mediaItem = thumbnails[currentIndex];
+                const mediaPath = mediaItem.dataset.path;
+                const isVideo = mediaItem.dataset.isVideo === 'true';
+
+                // Clear existing media
+                mainMediaContainer.innerHTML = '';
+
+                if (isVideo) {
+                    mainMediaContainer.innerHTML = `<video src="${mediaPath}" controls autoplay class="img-fluid main-media" style="width:100%; height:100%; object-fit:cover; object-position:center;"></video>`;
+                } else {
+                    mainMediaContainer.innerHTML = `<img src="${mediaPath}" alt="Product Image" class="img-fluid main-media" style="width:100%; height:100%; object-fit:cover; object-position:center;">`;
+                }
+
+                // Update active thumbnail border
                 thumbnails.forEach(t => t.style.border = '2px solid #ddd');
                 thumbnails[currentIndex].style.border = '2px solid #A34A4A';
             }
 
             thumbnails.forEach((thumb, idx) => {
                 thumb.addEventListener('click', function() {
-                    showImage(idx);
+                    showMedia(idx);
                 });
             });
 
-            if (btnPrev) btnPrev.addEventListener('click', () => showImage(currentIndex - 1));
-            if (btnNext) btnNext.addEventListener('click', () => showImage(currentIndex + 1));
+            if (btnPrev) btnPrev.addEventListener('click', () => showMedia(currentIndex - 1));
+            if (btnNext) btnNext.addEventListener('click', () => showMedia(currentIndex + 1));
         }
 
         // =============================

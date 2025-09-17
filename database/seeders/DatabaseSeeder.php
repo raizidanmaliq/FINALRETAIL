@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             BannerSeeder::class,
             TestimonialSeeder::class,
+            HeroSeeder::class,
+            CtaSeeder::class,
+            SocialSeeder::class,
         ]);
     }
 }

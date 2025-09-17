@@ -24,7 +24,7 @@
     </div>
 
     <div class="info">
-        <p><strong>Nama Customer:</strong> {{ $order->customer->name ?? $order->receiver_name ?? 'Tidak Diketahui' }}</p>
+        <p><strong>Nama:</strong> {{ $order->receiver_name ?? 'Tidak Diketahui' }}</p>
         <p><strong>Email:</strong> {{ $order->receiver_email ?? '-' }}</p>
         <p><strong>Telepon:</strong> {{ $order->receiver_phone ?? '-' }}</p>
         <p><strong>Alamat:</strong> {{ $order->shipping_address ?? $order->receiver_address ?? 'Tidak ada' }}</p>

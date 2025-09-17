@@ -16,10 +16,27 @@ class BannerService {
     }
 
     public function store(UpdateBannerRequest $request) {
-        $request->validated();
+        $validatedData = $request->validated();
 
         try {
-            Banner::create(array_merge($request->all(), [
+            // Check if the new banner is set to be active
+            if (isset($validatedData['is_active']) && $validatedData['is_active']) {
+                // Count the number of active banners
+                $activeBannersCount = Banner::where('is_active', true)->count();
+
+                // If the count is already 3 or more, deactivate the oldest one
+                if ($activeBannersCount >= 3) {
+                    $oldestActiveBanner = Banner::where('is_active', true)
+                                                ->orderBy('created_at', 'asc')
+                                                ->first();
+                    if ($oldestActiveBanner) {
+                        $oldestActiveBanner->update(['is_active' => false]);
+                    }
+                }
+            }
+
+            // Create the new banner
+            Banner::create(array_merge($validatedData, [
                 'image' => $this->imageHelper->uploadImage($request, 'image'),
             ]));
         } catch (\Error $e) {
@@ -29,13 +46,34 @@ class BannerService {
 
     public function update(UpdateBannerRequest $request, Banner $banner)
     {
-        $request->validated();
+        $validatedData = $request->validated();
 
         try {
-            $banner->update(array_merge($request->all(), [
-                'image' => $request->hasFile('image') ?
-                    $this->imageHelper->updateImage($request, 'image', $banner->image) :
-                    $banner->image,
+            $imageData = $request->hasFile('image') ?
+                $this->imageHelper->updateImage($request, 'image', $banner->image) :
+                $banner->image;
+
+            // Check if the banner is being updated to be active and is currently inactive
+            if (isset($validatedData['is_active']) && $validatedData['is_active'] && !$banner->is_active) {
+                // Count active banners, excluding the current one
+                $activeBannersCount = Banner::where('is_active', true)
+                                            ->where('id', '!=', $banner->id)
+                                            ->count();
+
+                // If the count is already 3, deactivate the oldest one
+                if ($activeBannersCount >= 3) {
+                    $oldestActiveBanner = Banner::where('is_active', true)
+                                                ->orderBy('updated_at', 'asc')
+                                                ->first();
+                    if ($oldestActiveBanner) {
+                        $oldestActiveBanner->update(['is_active' => false]);
+                    }
+                }
+            }
+
+            // Update the banner
+            $banner->update(array_merge($validatedData, [
+                'image' => $imageData,
             ]));
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
@@ -52,33 +90,33 @@ class BannerService {
     }
 
     public function data(object $banner)
-{
-    $array = $banner->get(['id', 'title', 'image', 'is_active']);
+    {
+        // ... (data method remains unchanged as it only formats the output)
+        $array = $banner->get(['id', 'title', 'image', 'is_active']);
 
-    $data = [];
-    $no = 0;
+        $data = [];
+        $no = 0;
 
-    foreach ($array as $item) {
-        $no++;
-        $nestedData['no'] = $no;
-        $nestedData['title'] = $item->title;
-        $nestedData['image'] = '<img src="' . asset($item->image) . '" width="150" height="80">';
-        $nestedData['status'] = $item->is_active
-            ? '<span class="badge badge-success">Aktif</span>'
-            : '<span class="badge badge-danger">Tidak Aktif</span>';
-        $nestedData['actions'] = '
-            <div class="btn-group">
-                <a href="' . route('admin.cms.banners.edit', $item) . '" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>
-                <a href="' . route('admin.cms.banners.destroy', $item) . '" class="btn btn-outline-danger btn-delete"><i class="fa fa-trash"></i></a>
-            </div>
-        ';
+        foreach ($array as $item) {
+            $no++;
+            $nestedData['no'] = $no;
+            $nestedData['title'] = $item->title;
+            $nestedData['image'] = '<img src="' . asset($item->image) . '" width="150" height="80">';
+            $nestedData['status'] = $item->is_active
+                ? '<span class="badge badge-success">Aktif</span>'
+                : '<span class="badge badge-danger">Tidak Aktif</span>';
+            $nestedData['actions'] = '
+                <div class="btn-group">
+                    <a href="' . route('admin.cms.banners.edit', $item) . '" class="btn btn-outline-warning"><i class="fa fa-edit"></i></a>
+                    <a href="' . route('admin.cms.banners.destroy', $item) . '" class="btn btn-outline-danger btn-delete"><i class="fa fa-trash"></i></a>
+                </div>
+            ';
 
-        $data[] = $nestedData;
+            $data[] = $nestedData;
+        }
+
+        return DataTables::of($data)
+            ->rawColumns(["actions", "image", "status"])
+            ->toJson();
     }
-
-    return DataTables::of($data)
-        ->rawColumns(["actions", "image", "status"])
-        ->toJson();
-}
-
 }

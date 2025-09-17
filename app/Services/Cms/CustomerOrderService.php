@@ -6,12 +6,14 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Customer;
+use App\Models\Inventory\Product;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log; // Pastikan ini ada
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class CustomerOrderService
 {
@@ -20,18 +22,14 @@ class CustomerOrderService
      */
     public function store(Request $request)
     {
-        // Panggil validasi khusus untuk metode store
         $this->validateStoreRequest($request);
 
         DB::beginTransaction();
         try {
-            // Langsung ambil customer_id dari request yang sekarang wajib ada
-            $customerId = $request->customer_id;
-
             $totalPrice = $this->calculateTotalPrice($request->products);
 
             $order = Order::create([
-                'customer_id' => $customerId, // Akan selalu memiliki nilai karena wajib diisi
+                'customer_id' => $request->customer_id,
                 'order_code' => 'ORD-' . Carbon::now()->format('YmdHis') . '-' . rand(100, 999),
                 'total_price' => $totalPrice,
                 'receiver_name' => $request->receiver_name,
@@ -53,32 +51,13 @@ class CustomerOrderService
                 ]);
             }
 
-            // Tangani data pembayaran opsional
-            if ($request->filled(['payment_method', 'payment_date'])) {
-                $paymentData = [
-                    'amount' => $totalPrice,
-                    'payment_method' => $request->payment_method,
-                    'payment_date' => $request->payment_date,
-                    'proof' => null, // default to null
-                ];
-
-                if ($request->hasFile('proof_of_payment')) {
-                    $storagePath = 'back_assets/img/cms/payments/';
-                    $proofPath = $request->file('proof_of_payment')->move(
-                        public_path($storagePath),
-                        $request->file('proof_of_payment')->hashName()
-                    );
-                    $paymentData['proof'] = $storagePath . basename($proofPath);
-                }
-
-                $order->payment()->create($paymentData);
-            }
+            $this->handlePayment($request, $order, $totalPrice);
 
             DB::commit();
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Gagal membuat pesanan. ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -87,12 +66,18 @@ class CustomerOrderService
      */
     public function update(Order $order, Request $request)
     {
-        // Panggil validasi khusus untuk metode update
-        $this->validateUpdateRequest($request);
+        $this->validateUpdateRequest($request, $order);
 
         DB::beginTransaction();
         try {
             $totalPrice = $this->calculateTotalPrice($request->products);
+            $newStatus = $request->order_status;
+            $oldStatus = $order->order_status;
+
+            // Panggil fungsi privat untuk mengurangi stok
+            if ($newStatus === 'completed' && $oldStatus !== 'completed') {
+                $this->_decreaseStock($order);
+            }
 
             $order->update([
                 'customer_id' => $request->customer_id,
@@ -101,7 +86,7 @@ class CustomerOrderService
                 'receiver_phone' => $request->receiver_phone,
                 'receiver_email' => $request->receiver_email,
                 'receiver_address' => $request->receiver_address,
-                'order_status' => $request->order_status,
+                'order_status' => $newStatus,
             ]);
 
             $order->items()->delete();
@@ -117,35 +102,64 @@ class CustomerOrderService
                 ]);
             }
 
-            // Tangani data pembayaran
-            if ($request->filled(['payment_method', 'payment_date'])) {
-                $paymentData = [
-                    'amount' => $totalPrice,
-                    'payment_method' => $request->payment_method,
-                    'payment_date' => $request->payment_date,
-                ];
-
-                if ($request->hasFile('proof_of_payment')) {
-                    $storagePath = 'back_assets/img/cms/payments/';
-                    $proofPath = $request->file('proof_of_payment')->move(
-                        public_path($storagePath),
-                        $request->file('proof_of_payment')->hashName()
-                    );
-                    $paymentData['proof'] = $storagePath . basename($proofPath);
-                }
-
-                if ($order->payment) {
-                    $order->payment->update($paymentData);
-                } else {
-                    $order->payment()->create($paymentData);
-                }
-            }
+            $this->handlePayment($request, $order, $totalPrice);
 
             DB::commit();
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Gagal memperbarui pesanan. ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Store or update payment data based on the request.
+     *
+     * @param Request $request
+     * @param Order $order
+     * @param float $totalPrice
+     * @return void
+     */
+    private function handlePayment(Request $request, Order $order, $totalPrice)
+    {
+        if ($request->hasFile('proof_of_payment') || $request->filled('payment_method') || $request->filled('payment_date')) {
+            $paymentData = [
+                'amount' => $totalPrice,
+                'payment_method' => $request->payment_method ?? null,
+                'payment_date' => $request->payment_date ?? null,
+                'proof' => null,
+            ];
+
+            if ($request->hasFile('proof_of_payment')) {
+                $storagePath = 'back_assets/img/cms/payments/';
+                $fileName = $request->file('proof_of_payment')->hashName();
+
+                if (!is_dir(public_path($storagePath))) {
+                    mkdir(public_path($storagePath), 0777, true);
+                }
+
+                $request->file('proof_of_payment')->move(public_path($storagePath), $fileName);
+                $paymentData['proof'] = $storagePath . $fileName;
+
+                if ($order->payment && $order->payment->proof) {
+                    @unlink(public_path($order->payment->proof));
+                }
+            } else {
+                $paymentData['proof'] = $order->payment->proof ?? null;
+            }
+
+            if ($order->payment) {
+                $order->payment->update($paymentData);
+            } else {
+                $order->payment()->create($paymentData);
+            }
+        } else {
+            if ($order->payment) {
+                if ($order->payment->proof) {
+                    @unlink(public_path($order->payment->proof));
+                }
+                $order->payment->delete();
+            }
         }
     }
 
@@ -155,7 +169,7 @@ class CustomerOrderService
     private function validateStoreRequest(Request $request)
     {
         $rules = [
-            'customer_id' => 'nullable|exists:customers,id', // Diubah menjadi wajib
+            'customer_id' => 'nullable|exists:customers,id',
             'receiver_name' => 'required|string|max:100',
             'receiver_phone' => 'required|string|max:20',
             'receiver_email' => 'required|email|max:255',
@@ -166,22 +180,36 @@ class CustomerOrderService
             'products.*.unit_price' => 'required|numeric|min:0',
             'products.*.color' => 'nullable|string|max:50',
             'products.*.size' => 'nullable|string|max:50',
+            'total_price' => 'required|numeric|min:1',
             'payment_date' => 'nullable|date|before_or_equal:today',
-            'payment_method' => 'nullable|string',
+            'payment_method' => 'nullable|string|in:bank_transfer,ewallet,manual',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'payment_date.before_or_equal' => 'Tanggal pembayaran tidak boleh di masa depan.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        $validator->after(function ($validator) use ($request) {
+            $isAnyPaymentFilled = $request->filled('payment_date') || $request->filled('payment_method') || $request->hasFile('proof_of_payment');
+            $isAllPaymentFilled = $request->filled('payment_date') && $request->filled('payment_method') && $request->hasFile('proof_of_payment');
+
+            if ($isAnyPaymentFilled && !$isAllPaymentFilled) {
+                $validator->errors()->add('payment', 'Detail pembayaran harus diisi lengkap (Tanggal, Metode, dan Bukti Pembayaran).');
+            }
+        });
 
         if ($validator->fails()) {
-            throw new \Exception(implode(', ', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
     }
 
     /**
      * Validation rules for updating an existing order.
      */
-    private function validateUpdateRequest(Request $request)
+    private function validateUpdateRequest(Request $request, Order $order)
     {
         $rules = [
             'customer_id' => 'nullable|exists:customers,id',
@@ -197,14 +225,41 @@ class CustomerOrderService
             'products.*.size' => 'nullable|string|max:50',
             'order_status' => 'required|in:pending,processing,shipped,completed,cancelled',
             'payment_date' => 'nullable|date|before_or_equal:today',
-            'payment_method' => 'nullable|string',
+            'payment_method' => 'nullable|string|in:bank_transfer,ewallet,manual',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'payment_date.before_or_equal' => 'Tanggal pembayaran tidak boleh di masa depan.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        $validator->after(function ($validator) use ($request, $order) {
+            $hasPaymentDate = $request->filled('payment_date');
+            $hasPaymentMethod = $request->filled('payment_method');
+            $hasNewProof = $request->hasFile('proof_of_payment');
+            $hasExistingProof = $order->payment && $order->payment->proof;
+
+            // Cek jika ada salah satu field pembayaran yang diisi
+            $isAnyPaymentFilled = $hasPaymentDate || $hasPaymentMethod || $hasNewProof;
+
+            // Kondisi valid: semua field diisi, atau semua field kosong
+            $isAllPaymentValid = ($hasPaymentDate && $hasPaymentMethod && ($hasNewProof || $hasExistingProof)) || (!$hasPaymentDate && !$hasPaymentMethod && !$hasNewProof && !$hasExistingProof);
+
+            // Jika ada salah satu field diisi, tapi tidak lengkap, maka tambahkan error
+            if ($isAnyPaymentFilled && !$isAllPaymentValid) {
+                $validator->errors()->add('payment', 'Detail pembayaran harus diisi lengkap (Tanggal, Metode, dan Bukti Pembayaran).');
+            }
+
+            // Jika semua field input dikosongkan, tapi ada data pembayaran lama yang ingin dihapus, validasi berhasil
+            if (!$isAnyPaymentFilled && $hasExistingProof && !$request->input('payment_date') && !$request->input('payment_method')) {
+                // Lulus validasi
+            }
+        });
 
         if ($validator->fails()) {
-            throw new \Exception(implode(', ', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
     }
 
@@ -215,13 +270,49 @@ class CustomerOrderService
         });
     }
 
+    /**
+     * Update order status and decrease product stock if status is 'completed'.
+     */
     public function updateStatus(Order $order, $status)
     {
+        DB::beginTransaction();
         try {
+            $oldStatus = $order->order_status;
+
+            // Panggil fungsi privat untuk mengurangi stok
+            if ($status === 'completed' && $oldStatus !== 'completed') {
+                $this->_decreaseStock($order);
+            }
+
             $order->update(['order_status' => $status]);
+            DB::commit();
         } catch (\Exception $e) {
-            throw new \Exception('Gagal memperbarui status pesanan: ' . $e->getMessage());
+            DB::rollBack();
+            throw $e;
         }
+    }
+
+    /**
+     * Logika untuk mengurangi stok produk dari pesanan.
+     * Metode ini akan dipanggil oleh metode lain.
+     */
+    private function _decreaseStock(Order $order)
+    {
+        Log::info('Memulai pengurangan stok untuk pesanan ID: ' . $order->id);
+        $order->load('items.product');
+
+        foreach ($order->items as $item) {
+            $product = $item->product;
+            if ($product) {
+                $newStock = $product->stock - $item->quantity;
+                $product->stock = max(0, $newStock);
+                $product->save();
+                Log::info("Stok produk '{$product->name}' (ID: {$product->id}) dikurangi. Stok baru: {$product->stock}");
+            } else {
+                Log::warning("Produk tidak ditemukan untuk item pesanan ID: {$item->id}");
+            }
+        }
+        Log::info('Pengurangan stok selesai.');
     }
 
     public function generateDataTables()
@@ -242,13 +333,13 @@ class CustomerOrderService
             ->addColumn('actions', function ($order) {
                 $editUrl = route('admin.cms.customer-orders.edit', $order);
                 $showUrl = route('admin.cms.customer-orders.show', $order);
-                $pdfUrl  = route('admin.cms.customer-orders.export-pdf', $order);
+                $pdfUrl = route('admin.cms.customer-orders.export-pdf', $order);
 
                 return '
                     <div class="btn-group">
                         <a href="' . $editUrl . '" class="btn btn-outline-warning"><i class="fa fa-pencil-alt"></i></a>
                         <a href="' . $showUrl . '" class="btn btn-outline-info show-order" data-id="' . $order->id . '"><i class="fa fa-eye"></i></a>
-                        <a href="' . $pdfUrl . '" class="btn btn-outline-danger" target="_blank"><i class="fa fa-file-pdf"></i></a>
+                        <a href="' . $pdfUrl . '" class="btn btn-outline-danger"><i class="fa fa-file-pdf"></i></a>
                     </div>
                 ';
             })

@@ -3,42 +3,224 @@
 @section('content')
 <main>
     {{-- Hero Section --}}
-    <section class="hero-section text-md-start py-5"
-             style="background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-                     position: relative; overflow: hidden;">
-        {{-- Wave background dekoratif --}}
-        <div style="position: absolute; top:0; left:0; width:100%; height:100%;
-                     background: url('{{ asset('images/image2.png') }}') no-repeat center center / cover;
-                     opacity:0.3; z-index:0;">
+    @if(isset($hero) && !empty($hero->images))
+<section class="hero-section py-5 position-relative overflow-hidden"
+         style="background: linear-gradient(135deg, #fff 0%, #faf7f7 100%);">
+
+    {{-- Decorative Shape Background --}}
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+         style="background: url('{{ asset('images/wave.png') }}') no-repeat bottom center / cover;
+                opacity: 0.2; z-index:0;">
+    </div>
+
+    <div class="container position-relative" style="z-index:1;">
+        <div class="row align-items-center g-5">
+
+            {{-- Left: Carousel --}}
+            <div class="col-lg-6">
+                <div id="heroCarousel" class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach ($hero->images as $imagePath)
+                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                <img src="{{ asset($imagePath) }}" class="d-block w-100"
+                                     alt="{{ $hero->headline }}"
+                                     style="object-fit: cover; height: 400px;">
+                            </div>
+                        @endforeach
+                    </div>
+                   @if(count($hero->images) > 1)
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon rounded-circle p-2" aria-hidden="true"
+              style="background-color:#9B4141;"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon rounded-circle p-2" aria-hidden="true"
+              style="background-color:#9B4141;"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+@endif
+
+                </div>
+            </div>
+
+            {{-- Right: Headline --}}
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 fw-bold mb-3"
+    style="font-family: 'Playfair Display', serif; color:#9B4141;">
+    {{ $hero->headline }}
+</h1>
+
+                <p class="fs-5 text-muted mb-4">
+                    {{ $hero->subheadline }}
+                </p>
+                <a href="{{ route('front.catalog.index') }}"
+                   class="btn btn-lg px-4 py-3"
+                   style="background-color: #9B4141; border:none; border-radius: 12px; color:#fff; font-weight:600; transition:all 0.3s;">
+                    Belanja Sekarang
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+@endif
+
+
+    {{-- Best Seller --}}
+    <section id="best-seller" class="best-seller-section py-5">
+    <div class="container">
+        <h2 class="text-center" style="color: #A34A4A;">Best Seller</h2>
+        <p class="text-center text-muted">The Most Popular Choices Right Now</p>
+
+        <!-- Tombol lihat semua -->
+        <div class="text-center" style="margin: 2rem 0;">
+            <a href="{{ route('front.catalog.index') }}"
+               class="fw-bold"
+               style="border:1px solid #A34A4A; color:#A34A4A; font-size:0.9rem; text-decoration:none; padding:6px 14px; border-radius:6px; display:inline-block; transition:all 0.3s;">
+               Lihat Semua →
+            </a>
         </div>
 
-        <div class="container d-flex align-items-center h-100 position-relative" style="z-index:1;">
-            <div class="row align-items-center">
-                {{-- Gambar di kiri --}}
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="{{ asset('images/image1.png') }}" alt="Hero" class="img-fluid">
+        <div class="row">
+            @forelse($bestSellerProducts as $product)
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm border-0 product-card">
+                    <div class="position-relative">
+                        <div style="height: 250px; overflow: hidden;">
+                            @if($product->images && count($product->images) > 0)
+                                <img src="{{ asset($product->images[0]->image_path) }}"
+                                     class="card-img-top product-image w-100 h-100 object-fit-cover"
+                                     alt="{{ $product->name }}">
+                            @endif
+                        </div>
+                        @if($product->promo_label)
+                            <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold"
+                                  style="background:#A34A4A; border-radius:6px; font-size:0.85rem;">
+                                {{ $product->promo_label }}
+                            </span>
+                        @endif
+                    </div>
+                    <div class="card-body d-flex flex-column text-center">
+                        <h6 class="card-title fw-bold mb-1">{{ $product->name }}</h6>
+                        <p class="card-text fw-bold mb-2" style="color:#A34A4A;">
+                            Rp. {{ number_format($product->selling_price, 0, ',', '.') }}
+                        </p>
+                        <!-- Tombol Buy -->
+                        <button class="btn w-100 mt-auto quick-view-btn"
+                                style="background:#A34A4A; color:#fff; border-radius:6px; padding:8px 0;"
+                                data-bs-toggle="modal"
+                                data-bs-target="#quickViewModal"
+                                data-product-id="{{ $product->id }}">
+                            Belanja Sekarang
+                        </button>
+                    </div>
                 </div>
-                {{-- Teks di kanan --}}
-                <div class="col-md-6">
-                    <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display', serif; line-height:1.3;">
-                        Belanja Mudah<br>
-                        Harga <span style="color: #CC3333;">Bersahabat,</span><br>
-                        <span style="color: #CC3333;">Kualitas</span> Terjamin
-                    </h1>
-                    <p class="lead" style="color: #555;">
-                        Temukan produk terbaik dengan harga yang tidak akan menguras kantong Anda.
-                    </p>
-                    <a href="{{ route('customer.auth.registers.index') }}"
-                       class="btn btn-danger btn-lg mt-4"
-                       style="background-color: #9B4141; border-radius: 8px; padding: 10px 30px;">
-                        Register
+            </div>
+            @empty
+            <p class="text-center">Tidak ada produk best seller saat ini.</p>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+    {{-- Flash Sale Section --}}
+    <section id="flash-sale" class="flash-sale-section py-5" style="background:#fff;">
+    <div class="container">
+        <div class="row g-4">
+
+            {{-- Kolom Kiri: Flash Sale --}}
+            {{-- Hapus 'align-items-stretch' dari row induk --}}
+            <div class="col-lg-6 d-flex flex-column" style="min-height: 400px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold" style="color:#A34A4A; font-size:1.25rem;">FLASH SALE</h5>
+                    <span id="flash-sale-timer" class="px-3 py-1 text-white fw-bold rounded"
+                        style="background:#A34A4A; font-size:0.85rem;">
+                        00:00:00
+                    </span>
+                    <a href="{{ route('front.catalog.index') }}"
+                       class="fw-bold d-inline-block"
+                       style="border:1px solid #A34A4A; color:#A34A4A; font-size:0.9rem; text-decoration:none; padding:6px 14px; border-radius:6px;">
+                        Lihat Semua →
                     </a>
+                </div>
+                <div class="row g-3 flex-grow-1">
+                    @forelse($flashSaleProducts as $product)
+                        <div class="col-6">
+                            <div class="card h-100 shadow-sm border-0 rounded-3 text-center product-card">
+                                <div class="position-relative" style="height:200px; overflow:hidden;">
+                                    @if($product->images && count($product->images) > 0)
+                                        <img src="{{ asset($product->images[0]->image_path) }}"
+                                             class="card-img-top product-image w-100 h-100 object-fit-cover"
+                                             alt="{{ $product->name }}">
+                                    @endif
+                                    <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold"
+                                          style="background:#A34A4A; border-radius:6px; font-size:0.7rem;">
+                                        FLASH SALE
+                                    </span>
+                                </div>
+                                <div class="p-3 d-flex flex-column">
+                                    <h6 class="fw-bold mb-1 product-name" style="font-size:0.95rem;">
+                                        {{ $product->name }}
+                                    </h6>
+                                    <p class="fw-bold mb-3 product-price" style="color:#A34A4A; font-size:0.95rem;">
+                                        Rp. {{ number_format($product->selling_price, 0, ',', '.') }}
+                                    </p>
+                                    <button class="btn w-100 text-white mt-auto quick-view-btn"
+                                            style="background:#A34A4A; border-radius:8px; font-size:0.85rem;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#quickViewModal"
+                                            data-product-id="{{ $product->id }}">
+                                        Belanja Sekarang
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center col-12">Tidak ada produk flash sale saat ini.</p>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- Kolom Kanan: Banner Carousel Dinamis --}}
+            <div class="col-lg-6 d-flex">
+                <div id="bannerCarousel" class="carousel slide w-100 h-100" data-bs-ride="carousel">
+                    {{-- Atur tinggi wadah banner agar konsisten --}}
+                    <div class="carousel-inner h-100 rounded-3" style="min-height: 400px; max-height: 400px; overflow: hidden;">
+                        @if($banners->count() > 0)
+                            @foreach($banners as $key => $banner)
+                                <div class="carousel-item {{ $key == 0 ? 'active' : '' }} h-100">
+                                    @php
+                                        $cleanedPath = str_replace('\\', '/', $banner->image);
+                                        $finalPath = Str::startsWith($cleanedPath, 'back_assets') ? $cleanedPath : 'storage/' . $cleanedPath;
+                                    @endphp
+                                    <a href="{{ $banner->link }}" target="_blank" class="w-100 h-100 d-block">
+                                        <img src="{{ asset($finalPath) }}" alt="{{ $banner->title }}"
+                                             class="d-block w-100 h-100"
+                                             style="object-fit: fill; border-radius:1rem;">
+                                    </a>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="card bg-light p-5 border-0 shadow-sm text-center w-100 h-100 d-flex align-items-center justify-content-center">
+                                <h4 class="text-muted">Promo menarik segera hadir!</h4>
+                            </div>
+                        @endif
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: #A34A4A; border-radius: 50%;"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: #A34A4A; border-radius: 50%;"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-
-    {{-- Highlight Keunggulan --}}
+    </div>
+</section>
+{{-- Highlight Keunggulan --}}
     <section class="py-5" style="background:#f8f9fa;">
     <div class="container text-center">
         {{-- Judul --}}
@@ -76,134 +258,115 @@
     </div>
 </section>
 
+    <section class="py-5"
+    style="background: url('{{ asset('images/image2.png') }}') no-repeat center center/cover;">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold" style="color: #9B4141;">Our Fashion Story</h2>
+            <p class="text-muted">
+                Dari sebuah passion untuk gaya yang berkelas, kami menciptakan pakaian yang membuat Anda merasa istimewa
+            </p>
+        </div>
 
-    {{-- Best Seller --}}
-    <section id="best-seller" class="best-seller-section py-5">
-        <div class="container">
-            <h2 class="text-center" style="color: #9B4141;">Best Seller</h2>
-            <p class="text-center text-muted mb-5">The Most Popular Choices Right Now</p>
-            <div class="row">
-                @forelse($bestSellerProducts as $product)
-                <div class="col-md-3 mb-4">
-                    <div class="card h-100 shadow-sm border-0 product-card">
-                        <div class="position-relative">
-                            <div style="height: 250px; overflow: hidden;">
-    @if($product->images && count($product->images) > 0)
-        <img src="{{ asset($product->images[0]->image_path) }}"
-             class="card-img-top product-image w-100 h-100 object-fit-cover"
-             alt="{{ $product->name }}">
-    @endif
-</div>
-                            @if($product->promo_label)
-                            <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold promo-badge"
-                                style="background:#A34A4A; border-radius:6px; font-size:0.85rem;">
-                                {{ $product->promo_label }}
-                            </span>
-                            @endif
-                        </div>
-                        <div class="card-body d-flex flex-column text-center">
-                            <h6 class="card-title fw-bold mb-1 product-name">{{ $product->name }}</h6>
-                            {{-- <p class="card-text text-muted small flex-grow-1 product-description">
-                                {{ Str::limit(strip_tags($product->description), 60) }}
-                            </p> --}}
-                            <p class="card-text fw-bold mb-2 product-price" style="color: #CC3333;">Rp. {{ number_format($product->selling_price, 0, ',', '.') }}</p>
-                            <button class="btn btn-danger w-100 mt-auto quick-view-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal"
-                                data-product-id="{{ $product->id }}">
-                                Buy
-                            </button>
-                        </div>
+        <div class="row align-items-stretch">
+            {{-- Foto Founder --}}
+            <div class="col-md-4 mb-3 d-flex">
+                <div class="card border-0 shadow-sm h-100 w-100">
+                    <img src="{{ asset('images/image4.png') }}" class="card-img-top" alt="Founder">
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="fw-bold mb-1">Sarah Wijaya</h6>
+                        <p class="text-muted mb-2">Founder & Creative Director</p>
+                        <p class="mb-0">
+                            Kami percaya bahwa desain yang baik tidak hanya tentang estetika,
+                            tetapi tentang menciptakan pengalaman yang bermakna bagi setiap pengguna.
+                        </p>
+                        {{-- Spacer agar teks mepet bawah --}}
+                        <div class="mt-auto"></div>
                     </div>
                 </div>
-                @empty
-                <p class="text-center">Tidak ada produk best seller saat ini.</p>
-                @endforelse
+            </div>
+
+            {{-- Foto Tim --}}
+            <div class="col-md-8 mb-3 d-flex">
+                <img src="{{ asset('images/image3.png') }}" class="img-fluid rounded shadow h-100 w-100 object-fit-cover" alt="Tim Kami">
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- Flash Sale Section --}}
-    <section id="flash-sale" class="flash-sale-section py-5" style="background:#fff;">
-        <div class="container">
-            <div class="row g-4 align-items-stretch">
-                <div class="col-lg-6 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold" style="color:#B22929; font-size:1.25rem;">FLASH SALE</h5>
-                        <span id="flash-sale-timer" class="px-3 py-1 text-white fw-bold rounded"
-                            style="background:#B22929; font-size:0.85rem;">
-                            00:00:00
-                        </span>
-                        <a href="{{ route('front.catalog.index') }}" class="fw-bold"
-   style="color:#B22929; font-size:0.9rem; text-decoration:none; display:inline-block;">
-    Lihat Semua →
-</a>
+    <section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" style="color:#A34A4A;">
+            Perjalanan Kami
+        </h2>
 
-                    </div>
-                    <div class="row g-3 flex-grow-1">
-                        @forelse($flashSaleProducts as $product)
-                            <div class="col-6">
-                                <div class="card h-100 shadow-sm border-0 rounded-3 text-center product-card">
-                                    <div class="position-relative" style="height:200px; overflow:hidden;">
-    @if($product->images && count($product->images) > 0)
-        <img src="{{ asset($product->images[0]->image_path) }}"
-             class="card-img-top product-image w-100 h-100 object-fit-cover"
-             alt="{{ $product->name }}">
-    @endif
-                                        <span class="position-absolute top-0 end-0 m-2 px-2 py-1 text-white fw-bold"
-                                            style="background:#B22929; border-radius:6px; font-size:0.7rem;">
-                                            FLASH SALE
-                                        </span>
-                                    </div>
-                                    <div class="p-3 d-flex flex-column">
-                                        <h6 class="fw-bold mb-1 product-name" style="font-size:0.95rem;">{{ $product->name }}</h6>
-                                        {{-- <p class="mb-2 text-muted small flex-grow-1 product-description" style="font-size:0.8rem;">
-                                            {{ Str::limit(strip_tags($product->description), 40) }}
-                                        </p> --}}
-                                        <p class="fw-bold mb-3 product-price" style="color:#B22929; font-size:0.95rem;">
-                                            Rp. {{ number_format($product->selling_price, 0, ',', '.') }}
-                                        </p>
-                                        <button class="btn w-100 text-white mt-auto quick-view-btn"
-                                            style="background:#B22929; border-radius:8px; font-size:0.85rem;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#quickViewModal"
-                                            data-product-id="{{ $product->id }}">
-                                            Buy
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-center col-12">Tidak ada produk flash sale saat ini.</p>
-                        @endforelse
+        <div class="position-relative">
+            <div class="position-absolute top-0 bottom-0 start-0 ms-2 border-start border-2" style="border-color:#A34A4A;"></div>
+
+            <div class="d-flex mb-4">
+                <div class="me-3 mt-2">
+                    <span class="d-inline-block rounded-circle" style="width:12px;height:12px;background:#A34A4A;"></span>
+                </div>
+                <div class="card border rounded-3 shadow-sm w-100" style="border-color:#A34A4A;">
+                    <div class="card-body">
+                        <h6 class="fw-bold" style="color:#A34A4A;">2019 Awal Mula</h6>
+                        <p class="mb-0 small">
+                            Dimulai dari sebuah kafe kecil di Jakarta, Sarah dan dua rekannya memutuskan untuk
+                            mengubah passion mereka terhadap desain menjadi sebuah bisnis yang dapat membantu UMKM lokal.
+                        </p>
                     </div>
                 </div>
-                {{-- Kolom Kanan: Banner Dinamis --}}
-                <div class="col-lg-6 d-flex">
-                    @if($banner)
-                        @php
-                            $cleanedPath = str_replace('\\', '/', $banner->image);
-                            $finalPath = Str::startsWith($cleanedPath, 'back_assets') ? $cleanedPath : 'storage/' . $cleanedPath;
-                        @endphp
-                        <a href="{{ $banner->link }}" target="_blank" class="w-100">
-                            <div class="card border-0 shadow-sm h-100 d-flex align-items-center justify-content-center"
-                                style="border-radius:1rem; overflow:hidden; background:#fff;">
-                                <img src="{{ asset($finalPath) }}" alt="{{ $banner->title }}"
-                                    class="img-fluid"
-                                    style="max-height: 400px; width: 100%; object-fit: cover; border-radius:1rem;">
-                            </div>
-                        </a>
-                    @else
-                        <div class="card bg-light p-5 border-0 shadow-sm text-center w-100 h-100">
-                            <h4 class="text-muted">Promo menarik segera hadir!</h4>
-                        </div>
-                    @endif
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="me-3 mt-2">
+                    <span class="d-inline-block rounded-circle" style="width:12px;height:12px;background:#A34A4A;"></span>
+                </div>
+                <div class="card border rounded-3 shadow-sm w-100" style="border-color:#A34A4A;">
+                    <div class="card-body">
+                        <h6 class="fw-bold" style="color:#A34A4A;">2020 Momentum Pertama</h6>
+                        <p class="mb-0 small">
+                            Pandemi justru menjadi berkah tersembunyi. Banyak bisnis yang membutuhkan transformasi digital,
+                            dan kami siap membantu dengan solusi desain yang terjangkau namun berkualitas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="me-3 mt-2">
+                    <span class="d-inline-block rounded-circle" style="width:12px;height:12px;background:#A34A4A;"></span>
+                </div>
+                <div class="card border rounded-3 shadow-sm w-100" style="border-color:#A34A4A;">
+                    <div class="card-body">
+                        <h6 class="fw-bold" style="color:#A34A4A;">2023 Awal Kemajuan</h6>
+                        <p class="mb-0 small">
+                            Tim berkembang menjadi 15 orang talenta terbaik dari berbagai disiplin ilmu. Kami pindah ke studio
+                            yang lebih besar dan mulai mengerjakan proyek-proyek enterprise.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="me-3 mt-2">
+                    <span class="d-inline-block rounded-circle" style="width:12px;height:12px;background:#A34A4A;"></span>
+                </div>
+                <div class="card border rounded-3 shadow-sm w-100" style="border-color:#A34A4A;">
+                    <div class="card-body">
+                        <h6 class="fw-bold" style="color:#A34A4A;">2025 Bertahan</h6>
+                        <p class="mb-0 small">
+                            Dengan lebih dari 150 proyek sukses, kami kini fokus pada inovasi dan sustainability dalam desain,
+                            sambil terus mempertahankan nilai-nilai human-centered design.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- Penilaian Produk --}}
+{{-- Penilaian Produk --}}
     <section id="product-reviews" class="py-4" style="background:#fff;">
         <div class="container">
             {{-- Judul --}}
@@ -306,114 +469,6 @@
         </div>
     </section>
 
-    <section class="py-5"
-    style="background: url('{{ asset('images/image2.png') }}') no-repeat center center/cover;">
-    <div class="container">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold" style="color: #9B4141;">Our Fashion Story</h2>
-            <p class="text-muted">
-                Dari sebuah passion untuk gaya yang berkelas, kami menciptakan pakaian yang membuat Anda merasa istimewa
-            </p>
-        </div>
-
-        <div class="row align-items-stretch">
-            {{-- Foto Founder --}}
-            <div class="col-md-4 mb-3 d-flex">
-                <div class="card border-0 shadow-sm h-100 w-100">
-                    <img src="{{ asset('images/image4.png') }}" class="card-img-top" alt="Founder">
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="fw-bold mb-1">Sarah Wijaya</h6>
-                        <p class="text-muted mb-2">Founder & Creative Director</p>
-                        <p class="mb-0">
-                            Kami percaya bahwa desain yang baik tidak hanya tentang estetika,
-                            tetapi tentang menciptakan pengalaman yang bermakna bagi setiap pengguna.
-                        </p>
-                        {{-- Spacer agar teks mepet bawah --}}
-                        <div class="mt-auto"></div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Foto Tim --}}
-            <div class="col-md-8 mb-3 d-flex">
-                <img src="{{ asset('images/image3.png') }}" class="img-fluid rounded shadow h-100 w-100 object-fit-cover" alt="Tim Kami">
-            </div>
-        </div>
-    </div>
-</section>
-
-    <section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-5" style="color:#9B4141;">
-            Perjalanan Kami
-        </h2>
-
-        <div class="position-relative">
-            <div class="position-absolute top-0 bottom-0 start-0 ms-2 border-start border-2 border-secondary"></div>
-
-            <div class="d-flex mb-4">
-                <div class="me-3 mt-2">
-                    <span class="d-inline-block rounded-circle bg-danger" style="width:12px;height:12px;"></span>
-                </div>
-                <div class="card border border-danger rounded-3 shadow-sm w-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold" style="color: #9B4141;">2019 Awal Mula</h6>
-                        <p class="mb-0 small">
-                            Dimulai dari sebuah kafe kecil di Jakarta, Sarah dan dua rekannya memutuskan untuk
-                            mengubah passion mereka terhadap desain menjadi sebuah bisnis yang dapat membantu UMKM lokal.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex mb-4">
-                <div class="me-3 mt-2">
-                    <span class="d-inline-block rounded-circle bg-danger" style="width:12px;height:12px;"></span>
-                </div>
-                <div class="card border border-danger rounded-3 shadow-sm w-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold" style="color: #9B4141;">2020 Momentum Pertama</h6>
-                        <p class="mb-0 small">
-                            Pandemi justru menjadi berkah tersembunyi. Banyak bisnis yang membutuhkan transformasi digital,
-                            dan kami siap membantu dengan solusi desain yang terjangkau namun berkualitas.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex mb-4">
-                <div class="me-3 mt-2">
-                    <span class="d-inline-block rounded-circle bg-danger" style="width:12px;height:12px;"></span>
-                </div>
-                <div class="card border border-danger rounded-3 shadow-sm w-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold" style="color: #9B4141;">2023 Awal Kemajuan</h6>
-                        <p class="mb-0 small">
-                            Tim berkembang menjadi 15 orang talenta terbaik dari berbagai disiplin ilmu. Kami pindah ke studio
-                            yang lebih besar dan mulai mengerjakan proyek-proyek enterprise.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex">
-                <div class="me-3 mt-2">
-                    <span class="d-inline-block rounded-circle bg-danger" style="width:12px;height:12px;"></span>
-                </div>
-                <div class="card border border-danger rounded-3 shadow-sm w-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold" style="color: #9B4141;">2025 Bertahan</h6>
-                        <p class="mb-0 small">
-                            Dengan lebih dari 150 proyek sukses, kami kini fokus pada inovasi dan sustainability dalam desain,
-                            sambil terus mempertahankan nilai-nilai human-centered design.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-
     <section class="cara-pemesanan py-5">
     <div class="container text-center">
         <h2 class="mb-5 fw-bold" style="color: #A34A4A;">Cara Pemesanan</h2>
@@ -497,7 +552,7 @@
     <section class="keamanan-jaminan py-5">
     <div class="container text-center">
         {{-- Judul --}}
-        <h2 class="mb-2 fw-bold" style="color: #9B4141;">Keamanan dan Jaminan</h2>
+        <h2 class="mb-2 fw-bold" style="color: #A34A4A;">Keamanan dan Jaminan</h2>
         <p class="mb-5" style="color: #666;">
             Kami memberikan perlindungan dan jaminan penuh untuk setiap transaksi Anda
         </p>
@@ -507,13 +562,13 @@
             <div class="col-md-6">
                 <div class="card p-4 h-100 shadow-sm border-0">
                     <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i class="fas fa-certificate fa-3x" style="color: #9B4141;"></i>
+                        <i class="fas fa-certificate fa-3x" style="color: #A34A4A;"></i>
                     </div>
-                    <h5 class="fw-bold" style="color:#9B4141;">Keamanan Transaksi</h5>
+                    <h5 class="fw-bold" style="color:#A34A4A;">Keamanan Transaksi</h5>
                     <ul class="list-unstyled text-start mt-3">
-                         <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Sistem pembayaran terenkripsi dengan teknologi SSL 256-bit.</li>
-                        <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Data pribadi Anda 100% tidak dibagikan ke pihak ketiga.</li>
-                        <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Transaksi diawasi oleh sistem keamanan real-time.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Sistem pembayaran terenkripsi dengan teknologi SSL 256-bit.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Data pribadi Anda 100% tidak dibagikan ke pihak ketiga.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Transaksi diawasi oleh sistem keamanan real-time.</li>
                     </ul>
                 </div>
             </div>
@@ -522,13 +577,13 @@
             <div class="col-md-6">
                 <div class="card p-4 h-100 shadow-sm border-0">
                     <div class="d-flex justify-content-center align-items-center mb-3">
-                        <i class="fas fa-shield-alt fa-3x" style="color: #9B4141;"></i>
+                        <i class="fas fa-shield-alt fa-3x" style="color: #A34A4A;"></i>
                     </div>
-                    <h5 class="fw-bold" style="color:#9B4141;">Garansi Produk</h5>
+                    <h5 class="fw-bold" style="color:#A34A4A;">Garansi Produk</h5>
                     <ul class="list-unstyled text-start mt-3">
-                         <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Sistem pembayaran terenkripsi dengan teknologi SSL 256-bit.</li>
-                        <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Data pribadi Anda 100% tidak dibagikan ke pihak ketiga.</li>
-                        <li><i class="fas fa-check-circle me-2" style="color: #8B4513;"></i> Transaksi diawasi oleh sistem keamanan real-time.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Sistem pembayaran terenkripsi dengan teknologi SSL 256-bit.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Data pribadi Anda 100% tidak dibagikan ke pihak ketiga.</li>
+                        <li><i class="fas fa-check-circle me-2" style="color: #A34A4A;"></i> Transaksi diawasi oleh sistem keamanan real-time.</li>
                     </ul>
                 </div>
             </div>
@@ -536,100 +591,197 @@
 
         {{-- Pembayaran --}}
         <div class="pembayaran-section mt-5">
-            <h5 class="fw-bold mb-4" style="color:#7a2c2c;">Menerima Pembayaran :</h5>
+            <h5 class="fw-bold mb-4" style="color:#A34A4A;">Menerima Pembayaran :</h5>
             <div class="d-flex justify-content-center align-items-center flex-wrap">
                 <div class="mx-4 text-center">
-                    <i class="fas fa-qrcode fa-3x" style="color: #9B4141;"></i>
+                    <i class="fas fa-qrcode fa-3x" style="color: #A34A4A;"></i>
                     <p class="fw-bold mt-2">QRIS</p>
                 </div>
                 <div class="mx-4 text-center">
-                    <i class="fas fa-university fa-3x" style="color: #9B4141;"></i>
+                    <i class="fas fa-university fa-3x" style="color: #A34A4A;"></i>
                     <p class="fw-bold mt-2">Transfer BANK</p>
                 </div>
                 <div class="mx-4 text-center">
-                    <i class="fas fa-wallet fa-3x" style="color: #9B4141;"></i>
+                    <i class="fas fa-wallet fa-3x" style="color: #A34A4A;"></i>
                     <p class="fw-bold mt-2">E-Wallet</p>
                 </div>
             </div>
         </div>
     </div>
-    </section>
+</section>
 
-    <section class="closing-cta py-5" style="background-color: #A34A4A;">
+<section class="pesan-sekarang py-5">
     <div class="container">
-        <div class="bg-white rounded-4 shadow p-5 position-relative overflow-hidden">
+        <h2 class="text-center fw-bold mb-2" style="color: #A34A4A; font-size: clamp(1.5rem, 4vw, 1.8rem);">
+            Pesan Sekarang, Tampil Percaya Diri
+        </h2>
+        <p class="text-center mb-5" style="color: #666; font-size: clamp(0.9rem, 2.5vw, 1rem);">
+            Dapatkan penawaran terbaik kami melalui media sosial dan e-commerce favorit Anda.
+        </p>
 
-            {{-- Background wave --}}
-            <img src="{{ asset('images/image2.png') }}"
-                 alt="Background Wave"
-                 class="position-absolute top-0 start-0 w-100 h-100"
-                 style="object-fit: cover; z-index:0; opacity:0.9;">
+        @if($social)
+            <div class="row g-4 align-items-stretch">
 
-            <div class="row align-items-center position-relative" style="z-index:1;">
+                {{-- Media Sosial --}}
+                <div class="col-md-6 d-flex">
+                    <div class="w-100 card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+                            <div class="mb-3 mb-md-0">
+                                <h4 class="h5 fw-bold m-0" style="color: #A34A4A;">Media Sosial</h4>
+                                <p class="m-0" style="color: #666; font-size: 0.95rem;">
+                                    Lihat lebih banyak outfit dan promo menarik di sini!
+                                </p>
+                            </div>
+                            <a href="{{ $social->button_link }}"
+   class="btn fw-semibold text-white px-4 py-2"
+   style="background: linear-gradient(135deg,#A34A4A); border:none; border-radius:8px;">
+    {{ $social->button_text }}
+</a>
 
-                {{-- Text di kiri --}}
-                <div class="col-md-6 text-md-start text-center mb-4 mb-md-0">
-                    <h2 class="fw-bold mb-4" style="color:#000;">
-                        "Sudah siap tampil beda? <br>Temukan outfit terbaikmu di sini."
+                        </div>
+
+                        <div class="row g-2 mt-2">
+                            @foreach($social->images as $imagePath)
+                                <div class="col-6 col-md-4">
+    <div class="rounded overflow-hidden border border-2"
+         style="border-color:#A34A4A; width: 100%; height: 180px;">
+        <img src="{{ asset($imagePath) }}"
+             class="img-fluid w-100 h-100"
+             style="object-fit: cover;"
+             alt="Social Media Post">
+    </div>
+</div>
+
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- E-commerce --}}
+                <div class="col-md-6 d-flex">
+                    <div class="card w-100 p-4 text-center text-white shadow-sm border-0 h-100"
+     style="background-color: #A34A4A; border-radius: 15px;">
+
+                        <h4 class="mb-3 fw-bold" style="font-size: 1.2rem;">Belanja di Sini</h4>
+                        <p class="mb-4" style="font-size: 0.95rem;">
+                            Dapatkan potongan harga khusus di store online kami!
+                        </p>
+                        <div class="d-flex justify-content-around flex-wrap gap-3 mt-3">
+                            <div class="text-center">
+                                <a href="{{ $social->shopee_link }}" target="_blank">
+                                    <img src="{{ asset('images/shopee.png') }}" width="80" height="80" class="rounded-circle mb-2 shadow-sm img-fluid" alt="Shopee">
+                                </a>
+                                <p class="mb-0 fw-bold">Shopee</p>
+                            </div>
+                            <div class="text-center">
+                                <a href="{{ $social->tokopedia_link }}" target="_blank">
+                                    <img src="{{ asset('images/tokopedia.png') }}" width="80" height="80" class="rounded-circle mb-2 shadow-sm img-fluid" alt="Tokopedia">
+                                </a>
+                                <p class="mb-0 fw-bold">Tokopedia</p>
+                            </div>
+                            <div class="text-center">
+                                <a href="{{ $social->lazada_link }}" target="_blank">
+                                    <img src="{{ asset('images/lazada.png') }}" width="80" height="80" class="rounded-circle mb-2 shadow-sm img-fluid" alt="Lazada">
+                                </a>
+                                <p class="mb-0 fw-bold">Lazada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        @endif
+    </div>
+</section>
+
+
+
+
+
+    @if($cta)
+<section class="closing-cta py-5" style="background: linear-gradient(135deg, #A34A4A, #7A2D2D);">
+    <div class="container">
+        <div class="rounded-4 shadow-lg p-4 p-md-5 position-relative overflow-hidden"
+             style="background: url('{{ asset('images/image2.png') }}') center/cover no-repeat;">
+
+            <div class="row align-items-center text-center text-md-start" style="z-index:2; position: relative;">
+
+                {{-- Text kiri --}}
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h2 class="fw-bold mb-4 display-6"
+                        style="color:#222; line-height:1.3; font-size:clamp(1.5rem,4vw,2.5rem);">
+                        {!! nl2br(e($cta->title)) !!}
                     </h2>
                     <a href="{{ route('front.catalog.index') }}"
-                       class="btn btn-danger btn-lg px-4"
-                       style="background-color:#9B4141; border:none;">
+                       class="btn btn-lg px-4 px-md-5 py-2 py-md-3 fw-semibold shadow-sm text-white"
+                       style="background: linear-gradient(135deg,#9B4141,#6C1E1E); border:none; border-radius:12px;">
                         Dapatkan Sekarang
                     </a>
                 </div>
 
-                {{-- Gambar model di kanan --}}
-                <div class="col-md-6 text-center">
-                    <img src="{{ asset('images/image6.png') }}"
-                             alt="Model Fashion"
-                             class="img-fluid"
-                             style="max-height:380px; object-fit:cover;">
+                {{-- Gambar kanan --}}
+                @if($cta->image)
+                <div class="col-md-6">
+                    <img src="{{ asset($cta->image) }}"
+                         alt="Model Fashion"
+                         class="img-fluid rounded-4"
+                         style="max-height:380px; object-fit:cover; width:100%;">
                 </div>
+                @endif
 
             </div>
         </div>
-    </section>
+    </div>
+</section>
+@endif
+
 
     <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-                <div class="modal-header border-0 pb-0 position-absolute top-0 end-0 z-3">
-                    <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 pt-5">
-                    <div class="row g-4 align-items-stretch">
-                        {{-- Gambar --}}
-                        <div class="col-md-6 text-center d-flex">
-                            <img id="modal-product-image"
-                                src=""
-                                alt="Product Image"
-                                class="img-fluid rounded shadow-sm w-100 h-100"
-                                style="object-fit: cover;">
-                        </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0 position-relative">
+                <button type="button" class="btn-close position-absolute" id="modalCloseButton"
+                        style="right: 20px; top: 20px; z-index: 1050;"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div class="row g-4 align-items-stretch">
+                    {{-- Gambar Produk --}}
+                    <div class="col-md-6 text-center d-flex">
+                        <img id="modal-product-image"
+                             src=""
+                             alt="Product Image"
+                             class="img-fluid rounded shadow-sm w-100 h-100"
+                             style="object-fit: cover;">
+                    </div>
 
-                        {{-- Detail Produk --}}
-                        <div class="col-md-6 d-flex flex-column h-100">
-                            <div>
-                                <h3 id="modal-product-name" class="fw-bold mb-2" style="color:#A34A4A;"></h3>
-                                <h4 id="modal-product-price" class="fw-bold mb-3" style="color:#A34A4A;"></h4>
-                                <div id="modal-product-description"
-     class="text-muted small mb-2"
-     style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 4.5em; white-space: pre-line;">
-</div>
-                                <p id="modal-product-stock" class="fw-bold mb-3 text-dark"></p>
+                    {{-- Detail Produk --}}
+                    <div class="col-md-6 d-flex flex-column h-100">
+                        <div>
+                            <h2 id="modal-product-name" class="fw-bold mb-2" style="color:#A34A4A;"></h2>
+                            <h4 class="mt-2 mb-3">
+                                <span id="modal-product-price" class="fw-bold" style="color:#A34A4A; font-size: 1.8rem;"></span>
+                            </h4>
 
-                                {{-- Varian --}}
-                                <div id="modal-product-variants" class="mb-3"></div>
+                            <div id="modal-product-description"
+                                 class="text-muted small mb-2"
+                                 style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 4.5em; white-space: pre-line;">
                             </div>
 
-                            {{-- Spacer otomatis --}}
-                            <div class="mt-auto">
-                                <a id="view-product-detail" href="#"
-                                class="btn text-white w-100"
-                                style="background-color:#A34A4A; border-radius: 30px; padding: 12px 24px;">
-                                <i class="fas fa-shopping-cart me-2"></i> Beli Sekarang
-                                </a>
+                            <p class="fw-bold mb-4 text-muted" id="modal-product-stock"></p>
+
+                            {{-- Varian --}}
+                            <div id="modal-product-variants" class="mb-3"></div>
+                        </div>
+
+                        {{-- Tombol --}}
+                        <div class="mt-auto">
+                            <a id="view-product-detail"
+                               href="#"
+                               class="btn text-white w-100"
+                               style="background-color: #A34A4A; border-radius: 30px; padding: 12px 24px;">
+                                <i class="fas fa-shopping-cart me-2"></i> Lihat Detail
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -639,7 +791,7 @@
     </div>
 </main>
 
-</main>
+
 
 <!-- ============================= -->
 <!-- CHATBOT WIDGET -->

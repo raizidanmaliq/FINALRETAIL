@@ -149,7 +149,7 @@ class CheckoutController extends Controller
             DB::commit();
 
             // Bangun pesan untuk WhatsApp dengan format URL
-            $whatsappNumber = '6285323227747';
+            $whatsappNumber = env('ADMIN_PHONE_NUMBER');
             $message = "Halo, saya *{$request->receiver_name}* (%2A{$request->receiver_phone}%2A).%0A%0ASaya telah melakukan pemesanan di website dengan detail:%0A%0A*Kode Pesanan:* {$order->order_code}%0A*Total Pembayaran:* Rp " . number_format($totalPrice, 0, ',', '.') . "%0A%0A*Detail Produk:*%0A";
 
             foreach ($cartItems as $item) {

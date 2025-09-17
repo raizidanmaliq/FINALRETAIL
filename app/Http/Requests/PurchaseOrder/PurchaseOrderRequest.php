@@ -22,9 +22,13 @@ class PurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'supplier_name' => ['required', 'string', 'max:255'],
+            // Changed from 'nullable' to 'required'
+            'supplier_id' => ['required', 'exists:suppliers,id'],
             'order_date' => ['required', 'date'],
-            'arrival_estimate_date' => ['nullable', 'date'],
+
+            // Changed from 'nullable' to 'required'
+            'arrival_estimate_date' => ['required', 'date'],
+
             'status' => ['nullable', 'string', 'in:pending,on_delivery,completed'],
             'products' => ['required', 'array', 'min:1'],
             'products.*.product_id' => ['required', 'exists:products,id'],

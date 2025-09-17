@@ -105,7 +105,7 @@
     <a href="{{ route('admin.inventory.opname.index') }}"
        class="btn btn-outline-danger"
        style="border-color: #9B4141; color: #9B4141; background-color: #FBF3F3;">
-        <i class="fa fa-edit"></i> Stock Opname
+        <i class="fa fa-edit"></i> Perbaharui Stok
     </a>
 </div>
 

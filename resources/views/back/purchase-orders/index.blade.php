@@ -1,14 +1,19 @@
+<?php
+/**
+ * @var \App\Models\Supplier[] $suppliers
+ */
+?>
 @extends('layouts.admin.app')
 
 @section('header')
 <header class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Pemesanan Barang</h1>
+            <h1>Pesanan Supplier</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Pemesanan Barang</li>
+                <li class="breadcrumb-item active">Pesanan Supplier</li>
             </ol>
         </div>
     </div>
@@ -38,12 +43,9 @@
                     <label for="supplier-filter">Filter Supplier</label>
                     <select id="supplier-filter" class="form-control">
                         <option value="">Semua Supplier</option>
-                        {{-- Opsi supplier akan diisi di sini --}}
-                        @php
-                            $suppliers = App\Models\PurchaseOrder\PurchaseOrder::select('supplier_name')->distinct()->get();
-                        @endphp
+                        {{-- Ambil data supplier dari controller dan tampilkan --}}
                         @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->supplier_name }}">{{ $supplier->supplier_name }}</option>
+                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -56,7 +58,7 @@
                 <tr>
                     <th>No.</th>
                     <th>No. PO</th>
-                    <th>Supplier</th>
+                    <th>Nama Supplier</th>
                     <th>Tanggal Pesan</th>
                     <th>Estimasi Tiba</th>
                     <th>Status</th>
@@ -67,26 +69,6 @@
         </table>
     </article>
 </section>
-
-<div class="modal fade" id="showPoModal" tabindex="-1" role="dialog" aria-labelledby="showPoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="showPoModalLabel">Detail Pemesanan Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="modal-content">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('js')
@@ -109,10 +91,10 @@
                 dataType: "json",
                 type: "GET",
                 data: function(d) {
-    d.from_date = $('#date-range-filter').val() ? $('#date-range-filter').data('daterangepicker').startDate.format('YYYY-MM-DD') : '';
-    d.to_date = $('#date-range-filter').val() ? $('#date-range-filter').data('daterangepicker').endDate.format('YYYY-MM-DD') : '';
-    d.supplier = $('#supplier-filter').val();
-}
+                    d.from_date = $('#date-range-filter').val() ? $('#date-range-filter').data('daterangepicker').startDate.format('YYYY-MM-DD') : '';
+                    d.to_date = $('#date-range-filter').val() ? $('#date-range-filter').data('daterangepicker').endDate.format('YYYY-MM-DD') : '';
+                    d.supplier_id = $('#supplier-filter').val();
+                }
             },
             columns: [
                 { data: 'id', name: 'id', className: "text-center align-middle"},
@@ -157,70 +139,6 @@
         // Event listener for supplier filter
         $('#supplier-filter').on('change', function() {
             table.ajax.reload();
-        });
-
-        // Event listener untuk tombol "mata" (show)
-        $('#datatable').on('click', '.show-po', function(e) {
-            e.preventDefault();
-            const poId = $(this).data('id');
-            const url = `{{ route('admin.purchase-orders.show', ':poId') }}`.replace(':poId', poId);
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    let productListHtml = '';
-                    let totalGrand = 0;
-                    if (data.details && data.details.length > 0) {
-                        data.details.forEach(item => {
-                            let totalItem = item.quantity * item.unit_price;
-                            totalGrand += totalItem;
-                            productListHtml += `
-                                <tr>
-                                    <td>${item.product.name}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.unit_price)}</td>
-                                    <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalItem)}</td>
-                                </tr>
-                            `;
-                        });
-                    }
-
-                    let html = `
-                        <p><strong>Nomor PO:</strong> ${data.po_number}</p>
-                        <p><strong>Supplier:</strong> ${data.supplier_name}</p>
-                        <p><strong>Tanggal Pemesanan:</strong> ${data.order_date}</p>
-                        <p><strong>Estimasi Tiba:</strong> ${data.arrival_estimate_date || '-'}</p>
-                        <p><strong>Status:</strong> ${data.status}</p>
-                        <hr>
-                        <h5>Detail Produk</h5>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Produk</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga Unit</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${productListHtml}
-                                <tr>
-                                    <td colspan="3" class="text-right"><strong>Total Keseluruhan</strong></td>
-                                    <td><strong>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalGrand)}</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    `;
-                    $('#modal-content').html(html);
-                    $('#showPoModal').modal('show');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                    alert('Gagal mengambil data. Silakan coba lagi.');
-                }
-            });
         });
     });
 </script>

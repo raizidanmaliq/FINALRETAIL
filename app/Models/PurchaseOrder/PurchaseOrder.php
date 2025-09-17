@@ -5,6 +5,7 @@ namespace App\Models\PurchaseOrder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\Supplier; // Tambahkan ini
 
 class PurchaseOrder extends Model
 {
@@ -15,6 +16,12 @@ class PurchaseOrder extends Model
     public function details()
     {
         return $this->hasMany(PurchaseOrderDetail::class);
+    }
+
+    // Tambahkan relasi ke model Supplier
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     // Mutator lama (masih valid)

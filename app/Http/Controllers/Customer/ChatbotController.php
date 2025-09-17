@@ -105,7 +105,7 @@ class ChatbotController extends Controller
                         $data['color'] = 'Tidak Ada';
                         $data['size'] = 'Tidak Ada';
                         $reply = "Kak {$data['receiver_name']}, Anda memilih produk: {$data['product_name']} dengan harga Rp "
-                            . number_format($data['price'], 0, ',', '.') . ". Berapa jumlah (pcs) yang ingin dipesan?";
+                            . number_format($data['price'], 0, ',', '.') . ". Berapa jumlah (produk) yang ingin dipesan?";
                         Session::put('chatbot_state', 'input_quantity');
                     }
                 }
@@ -131,7 +131,7 @@ class ChatbotController extends Controller
                 } else {
                     $data['size'] = 'Tidak Ada';
                     $reply = "Kak {$data['receiver_name']}, Anda memilih produk: {$data['product_name']} (Warna: {$data['color']}) dengan harga Rp "
-                        . number_format($data['price'], 0, ',', '.') . ". Berapa jumlah (pcs) yang ingin dipesan?";
+                        . number_format($data['price'], 0, ',', '.') . ". Berapa jumlah (produk) yang ingin dipesan?";
                     Session::put('chatbot_state', 'input_quantity');
                 }
                 Session::put('chatbot_data', $data);
@@ -139,7 +139,7 @@ class ChatbotController extends Controller
 
             case 'select_size':
                 $data['size'] = $request->input('input');
-                $reply = "Ukuran {$data['size']} dipilih.\n\nBerapa jumlah (pcs) yang ingin dipesan?";
+                $reply = "Ukuran {$data['size']} dipilih.\n\nBerapa jumlah (produk) yang ingin dipesan?";
                 Session::put('chatbot_state', 'input_quantity');
                 Session::put('chatbot_data', $data);
                 break;
@@ -148,7 +148,7 @@ class ChatbotController extends Controller
                 $data['quantity'] = (int) $request->input('input');
                 $data['subtotal'] = $data['price'] * $data['quantity'];
 
-                $reply = "Oke, {$data['quantity']} pcs (Subtotal: Rp "
+                $reply = "Oke, {$data['quantity']} produk (Subtotal: Rp "
                     . number_format($data['subtotal'], 0, ',', '.')
                     . ").\n\nMohon masukkan nomor handphone Anda:";
                 Session::put('chatbot_state', 'input_phone');
@@ -176,7 +176,7 @@ class ChatbotController extends Controller
                 $totalPrice = $data['subtotal'] ?? 0;
 
                 $order = Order::create([
-                    'customer_id'      => null,
+                    'customer_id'      => auth('customer')->id(),
                     'order_code'       => $orderCode,
                     'total_price'      => $totalPrice,
                     'receiver_name'    => $data['receiver_name'],
@@ -196,13 +196,13 @@ class ChatbotController extends Controller
                     'subtotal'   => $data['subtotal'],
                 ]);
 
-                $adminPhoneNumber = '6285323227747';
+                $adminPhoneNumber = env('ADMIN_PHONE_NUMBER');
                 $whatsappMessage = "Halo, saya *{$data['receiver_name']}* (*{$data['receiver_phone']}*).\n\n";
                 $whatsappMessage .= "Saya telah melakukan pemesanan di website dengan detail:\n\n";
                 $whatsappMessage .= "*Kode Pesanan:* {$orderCode}\n";
                 $whatsappMessage .= "*Total Pembayaran:* Rp " . number_format($totalPrice, 0, ',', '.') . "\n\n";
                 $whatsappMessage .= "*Detail Produk:*\n";
-                $whatsappMessage .= "- {$data['product_name']} ({$data['color']} / {$data['size']}) ({$data['quantity']} pcs) - Rp "
+                $whatsappMessage .= "- {$data['product_name']} ({$data['color']} / {$data['size']}) ({$data['quantity']} produk) - Rp "
                     . number_format($data['price'], 0, ',', '.') . "\n\n";
                 $whatsappMessage .= "*Alamat Pengiriman:*\n";
                 $whatsappMessage .= "{$data['receiver_address']}\n\n";

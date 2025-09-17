@@ -4,11 +4,11 @@
 <header class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Daftar Pesanan Pelanggan</h1>
+            <h1>Daftar Pesanan</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Pesanan Pelanggan</li>
+                <li class="breadcrumb-item active">Daftar Pesanan</li>
             </ol>
         </div>
     </div>

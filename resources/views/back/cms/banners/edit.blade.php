@@ -11,7 +11,7 @@
                     <li class="breadcrumb-item">
                         <a href="{{ route('admin.cms.banners.index') }}">Banner Promo</a>
                     </li>
-                    <li class="breadcrumb-item active">Perbaharui Banner</li>
+                    <li class="breadcrumb-item active">Perbaharui Banner Promo</li>
                 </ol>
             </div>
         </div>

@@ -26,11 +26,16 @@ use App\Http\Controllers\Back\Cms\TestimonialController;
 use App\Http\Controllers\Back\Cms\BannerController;
 use App\Http\Controllers\Back\Cms\InformationPagesController;
 use App\Http\Controllers\Back\Cms\CatalogController;
+use App\Http\Controllers\Back\Cms\HeroController;
+use App\Http\Controllers\Back\Cms\CtaController;
+use App\Http\Controllers\Back\Cms\SocialController;
 use App\Http\Controllers\Back\Inventory\DashboardController;
 use App\Http\Controllers\Back\Inventory\DashboardActionsController;
 use App\Http\Controllers\Back\Inventory\ProductController;
 use App\Http\Controllers\Back\Inventory\HistoryController;
 use App\Http\Controllers\Back\PurchaseOrder\PurchaseOrderController;
+use App\Http\Controllers\Back\Supplier\SupplierController;
+use App\Http\Controllers\Back\Inventory\CashflowController;
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
@@ -72,9 +77,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::match(['get', 'post'], 'checkout/prepare', [CheckoutController::class, 'prepare'])->name('checkout.prepare');
         Route::post('checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{id}/upload', [OrderController::class, 'uploadPayment'])->name('orders.upload_payment');
-    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+        Route::post('/orders/{id}/upload', [OrderController::class, 'uploadPayment'])->name('orders.upload_payment');
+        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     });
 });
 // ... (bagian bawah kode rute Anda)
@@ -101,10 +106,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('catalog', [CatalogController::class, 'index'])->name('catalog.index');
                 Route::get('catalog/data', [CatalogController::class, 'data'])->name('catalog.data');
                 Route::post('catalog/{product}/toggle-display', [CatalogController::class, 'toggleDisplay'])->name('catalog.toggle-display');
+                Route::resource('heroes', HeroController::class)->except('show');
+                Route::post('heroes/data', [HeroController::class, 'data'])->name('heroes.data');
+                Route::resource('ctas', CtaController::class)->except(['show']);
+                Route::post('ctas/data', [CtaController::class, 'data'])->name('ctas.data');
+                Route::resource('socials', SocialController::class);
+                Route::post('socials/data', [SocialController::class, 'data'])->name('socials.data');
             });
 
             Route::group(['prefix' => 'inventory', 'as' => 'inventory.'], function () {
                 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+                Route::get('/cashflow', [CashflowController::class, 'index'])->name('cashflow');
                 Route::get('products/create', [DashboardActionsController::class, 'createProduct'])->name('products.create');
                 Route::post('products/store', [DashboardActionsController::class, 'storeProduct'])->name('products.store');
                 Route::get('opname', [DashboardActionsController::class, 'showStockOpname'])->name('opname.index');
@@ -130,6 +142,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('{purchase_order}/pdf', [PurchaseOrderController::class, 'exportPdf'])->name('pdf');
                 Route::get('{purchase_order}', [PurchaseOrderController::class, 'show'])->name('show');
             });
+
+            // Tambahkan rute untuk Suppliers di sini
+            Route::group(['prefix' => 'suppliers', 'as' => 'suppliers.'], function () {
+                Route::get('/', [SupplierController::class, 'index'])->name('index');
+                Route::get('/create', [SupplierController::class, 'create'])->name('create');
+                Route::post('/', [SupplierController::class, 'store'])->name('store');
+                Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit');
+                Route::patch('/{supplier}', [SupplierController::class, 'update'])->name('update');
+                Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy');
+                Route::post('/data', [SupplierController::class, 'data'])->name('data');
+            });
+
         });
 
         Route::group(['middleware' => 'role:owner|admin'], function () {
@@ -142,7 +166,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('customer-orders/{order}/update-status', [CustomerOrderController::class, 'updateStatus'])->name('customer-orders.updateStatus');
                 Route::get('customer-orders/{order}/export-pdf', [CustomerOrderController::class, 'exportPdf'])->name('customer-orders.export-pdf');
                 // Tambahkan rute ini di dalam grup middleware 'auth' dan 'admin'
-Route::get('customer-orders/products/{product}/variants', [CustomerOrderController::class, 'getProductVariants'])->name('admin.cms.customer-orders.product-variants');
+                Route::get('customer-orders/products/{product}/variants', [CustomerOrderController::class, 'getProductVariants'])->name('admin.cms.customer-orders.product-variants');
             });
         });
     });

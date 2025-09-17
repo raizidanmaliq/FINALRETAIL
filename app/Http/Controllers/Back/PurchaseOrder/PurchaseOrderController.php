@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Back\PurchaseOrder;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PurchaseOrder\PurchaseOrderRequest; // Ubah nama request
+use App\Http\Requests\PurchaseOrder\PurchaseOrderRequest;
 use App\Models\PurchaseOrder\PurchaseOrder;
 use App\Models\Inventory\Product;
+use App\Models\Supplier;
 use App\Services\PurchaseOrder\PurchaseOrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseOrderController extends Controller
 {
@@ -20,21 +24,26 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
-        return view('back.purchase-orders.index');
+        $suppliers = Supplier::all();
+        return view('back.purchase-orders.index', compact('suppliers'));
     }
 
     public function create()
     {
         $products = Product::all();
-        return view('back.purchase-orders.create', compact('products'));
+        $suppliers = Supplier::all();
+        return view('back.purchase-orders.create', compact('products', 'suppliers'));
     }
 
-    public function store(PurchaseOrderRequest $request) // Ubah nama request
+    public function store(PurchaseOrderRequest $request)
     {
         try {
+            DB::beginTransaction();
             $this->purchaseOrderService->store($request);
+            DB::commit();
             return redirect()->route('admin.purchase-orders.index')->with('success', 'Pemesanan berhasil dibuat.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
     }
@@ -44,10 +53,10 @@ class PurchaseOrderController extends Controller
      */
     public function edit(PurchaseOrder $purchaseOrder)
     {
-        // Load relasi details dan product untuk menampilkan data di form
-        $purchaseOrder->load(['details.product']);
+        $purchaseOrder->load(['details.product', 'supplier']);
         $products = Product::all();
-        return view('back.purchase-orders.edit', compact('purchaseOrder', 'products'));
+        $suppliers = Supplier::all();
+        return view('back.purchase-orders.edit', compact('purchaseOrder', 'products', 'suppliers'));
     }
 
     /**
@@ -56,16 +65,19 @@ class PurchaseOrderController extends Controller
     public function update(PurchaseOrderRequest $request, PurchaseOrder $purchaseOrder)
     {
         try {
+            DB::beginTransaction();
             $this->purchaseOrderService->update($purchaseOrder, $request);
+            DB::commit();
             return redirect()->route('admin.purchase-orders.index')->with('success', 'Pemesanan berhasil diperbarui.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
     }
 
     public function show(PurchaseOrder $purchaseOrder)
     {
-        $purchaseOrder->load(['details.product']);
+        $purchaseOrder->load(['details.product', 'supplier']);
         return response()->json($purchaseOrder);
     }
 

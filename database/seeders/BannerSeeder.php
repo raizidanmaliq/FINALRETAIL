@@ -17,6 +17,20 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'title' => 'Promo Ramadhan Hemat',
+                'image' => 'back_assets/img/cms/banners/Ramadan-Big-Sale.jpg',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'Flash Sale Weekend',
+                'image' => 'back_assets/img/cms/banners/baka.jpg',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

@@ -14,7 +14,7 @@ class ProductDetailController extends Controller
         }
 
         $product->load('images', 'variants');
-        $whatsappNumber = '6285323227747';
+        $whatsappNumber = env('ADMIN_PHONE_NUMBER');
 
         // Mengganti spasi dengan tanda hubung (-) untuk URL yang lebih rapi
         $productNameForUrl = str_replace(' ', '-', $product->name);

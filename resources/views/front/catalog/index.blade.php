@@ -137,7 +137,7 @@
                                 data-bs-target="#quickViewModal"
                                 data-product-id="{{ $product->id }}"
                                 style="background-color:#A34A4A; border-radius:30px; padding:10px;">
-                            Buy
+                            Belanja Sekarang
                         </button>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                                 data-bs-target="#quickViewModal"
                                 data-product-id="{{ $product->id }}"
                                 style="background-color:#A34A4A; border-radius:30px; padding:10px;">
-                            Buy
+                            Belanja Sekarang
                         </button>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
                                href="#"
                                class="btn text-white w-100"
                                style="background-color: #A34A4A; border-radius: 30px; padding: 12px 24px;">
-                                <i class="fas fa-shopping-cart me-2"></i> Beli Sekarang
+                                <i class="fas fa-shopping-cart me-2"></i> Lihat Detail
                             </a>
                         </div>
                     </div>

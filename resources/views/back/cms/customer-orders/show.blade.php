@@ -8,8 +8,8 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{ route('admin.cms.customer-orders.index') }}">Pesanan Pelanggan</a></li>
-                <li class="breadcrumb-item active">Detail</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.cms.customer-orders.index') }}">Pesanan</a></li>
+                <li class="breadcrumb-item active">Detail Pesanan</li>
             </ol>
         </div>
     </div>
@@ -63,10 +63,13 @@
 
                             @if($order->payment->proof)
                                 <p><strong>Bukti:</strong>
-                                    <a href="#" class="btn btn-sm text-white" style="background-color: #A34A4A;" data-toggle="modal" data-target="#proofModal">
-                                        <i class="fas fa-eye"></i> Lihat Bukti
-                                    </a>
+                                    <a href="{{ asset($order->payment->proof) }}" target="_blank">Lihat Bukti</a>
                                 </p>
+                                <div class="mb-3">
+                                    <a href="{{ asset($order->payment->proof) }}" target="_blank">
+                                        <img src="{{ asset($order->payment->proof) }}" alt="Bukti Pembayaran" class="img-fluid rounded shadow-sm" style="max-width: 150px; cursor: pointer;">
+                                    </a>
+                                </div>
                             @else
                                 <p class="text-danger"><i class="fas fa-times-circle"></i> Belum ada bukti pembayaran.</p>
                             @endif
@@ -85,7 +88,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle mb-0">
-                        <thead class="table-light"> {{-- Perubahan di sini, menggunakan class table-light --}}
+                        <thead class="table-light">
                             <tr>
                                 <th>Produk</th>
                                 <th>Warna</th>
@@ -119,29 +122,6 @@
         </div>
     </div>
 </section>
-
-<div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow">
-            <div class="modal-header text-white" style="background-color: #A34A4A;">
-                <h5 class="modal-title" id="proofModalLabel"><i class="fas fa-image"></i> Bukti Pembayaran</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center bg-light">
-                @if($order->payment && $order->payment->proof)
-    <img src="{{ asset($order->payment->proof) }}"
-         alt="Bukti Pembayaran"
-         class="img-fluid rounded shadow-sm">
-@else
-    <p class="text-danger">Bukti pembayaran tidak ditemukan.</p>
-@endif
-
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
 .card {
