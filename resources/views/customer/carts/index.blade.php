@@ -15,11 +15,8 @@
                                 <th class="align-middle ps-3" width="5%">
                                     <input type="checkbox" id="selectAll">
                                 </th>
-                                <th scope="col" class="ps-3">Produk</th>
-                                <th scope="col" class="text-end pe-3">Harga</th>
-                                <th scope="col" class="text-center">Kuantitas</th>
-                                <th scope="col" class="text-end pe-3">Total</th>
-                                <th scope="col" class="text-center">Aksi</th>
+                                <th scope="col" class="ps-3">Produk</th> <th scope="col" class="text-end pe-3">Harga</th> <th scope="col" class="text-center">Kuantitas</th>
+                                <th scope="col" class="text-end pe-3">Total</th> <th scope="col" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,33 +37,25 @@
                                     }
                                 @endphp
                                 <tr id="item-row-{{ $item->id }}" class="border-bottom" style="border-color: #A34A4A !important;">
-                                    <td class="align-middle ps-3">
-                                        <input type="checkbox"
-                                            name="cart_ids[]"
-                                            value="{{ $item->id }}"
-                                            class="cart-checkbox"
-                                            data-price="{{ $itemTotal }}"
-                                            data-original-price="{{ $itemPrice }}">
+                                    <td class="align-middle ps-3"> <input type="checkbox"
+                                               name="cart_ids[]"
+                                               value="{{ $item->id }}"
+                                               class="cart-checkbox"
+                                               data-price="{{ $itemTotal }}"
+                                               data-original-price="{{ $itemPrice }}">
                                     </td>
-                                    <td class="align-middle">
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ $imagePath }}"
+                                    <td class="align-middle"> <div class="d-flex align-items-center"> <img src="{{ $imagePath }}"
                                                  alt="{{ $item->product->name ?? $item->product_name ?? '' }}"
                                                  class="img-fluid rounded me-3"
                                                  style="width:80px; height:80px; object-fit:cover;"
                                                  onerror="this.src='{{ asset('images/no-image.png') }}'">
                                             <div>
-                                                <h6 class="mb-2 fw-bold">{{ $item->product->name ?? $item->product_name ?? '' }}</h6>
-                                                <div class="mb-1"><small>Ukuran: {{ $item->variant->size ?? $item->size ?? '-' }}</small></div>
-                                                <div><small>Warna: {{ $item->variant->color ?? $item->color ?? '-' }}</small></div>
+                                                <h6 class="mb-2 fw-bold">{{ $item->product->name ?? $item->product_name ?? '' }}</h6> <div class="mb-1"><small>Ukuran: {{ $item->variant->size ?? $item->size ?? '-' }}</small></div> <div><small>Warna: {{ $item->variant->color ?? $item->color ?? '-' }}</small></div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="align-middle text-end pe-3">
-                                        <div class="fw-medium">Rp {{ number_format($itemPrice, 0, ',', '.') }}</div>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <div class="input-group input-group-sm quantity-control mx-auto" style="width:120px;">
+                                    <td class="align-middle text-end pe-3"> <div class="fw-medium">Rp {{ number_format($itemPrice, 0, ',', '.') }}</div> </td>
+                                    <td class="align-middle text-center"> <div class="input-group input-group-sm quantity-control mx-auto" style="width:120px;">
                                             <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="decrease" data-item-id="{{ $item->id }}"><i class="fas fa-minus"></i></button>
                                             <input type="number"
                                                    name="quantities[{{ $item->id }}]"
@@ -77,11 +66,9 @@
                                             <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="increase" data-item-id="{{ $item->id }}"><i class="fas fa-plus"></i></button>
                                         </div>
                                     </td>
-                                    <td class="fw-bold align-middle text-end pe-3" id="total-{{ $item->id }}">
-                                        Rp {{ number_format($itemTotal, 0, ',', '.') }}
+                                    <td class="fw-bold align-middle text-end pe-3" id="total-{{ $item->id }}"> Rp {{ number_format($itemTotal, 0, ',', '.') }}
                                     </td>
-                                    <td class="align-middle text-center">
-                                        <button type="button" class="btn btn-sm p-0" onclick="confirmDelete('{{ $item->id }}')" style="color: #A34A4A;">
+                                    <td class="align-middle text-center"> <button type="button" class="btn btn-sm p-0" onclick="confirmDelete('{{ $item->id }}')" style="color: #A34A4A;">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </td>
@@ -90,9 +77,7 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-top" style="border-color: #A34A4A !important;">
-                                <td colspan="4" class="text-end fw-bold py-3 pe-3">Total untuk Produk Dipilih</td>
-                                <td colspan="2" id="selected-total" class="fw-bold text-end py-3 pe-3"><strong>Rp 0</strong></td>
-                            </tr>
+                                <td colspan="4" class="text-end fw-bold py-3 pe-3">Total untuk Produk Dipilih</td> <td colspan="2" id="selected-total" class="fw-bold text-end py-3 pe-3"><strong>Rp 0</strong></td> </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -135,39 +120,7 @@
     @endif
 </div>
 
-{{-- Tambahkan kode chatbot di sini --}}
-<div id="chatbotWidget" class="card shadow"
-     style="display:none; width:350px; position:fixed; bottom:120px; right:20px; z-index:1200; border-radius:12px;">
-
-    <div id="chatbotChat">
-        <div class="card-header d-flex justify-content-between align-items-center py-3"
-             style="background-color: #A34A4A; color: white; border-top-left-radius:12px; border-top-right-radius:12px;">
-            <div class="d-flex align-items-center">
-                <div class="me-2" style="width:30px; height:30px; background-color:white; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                    <i class="fas fa-robot" style="color:#A34A4A;"></i>
-                </div>
-                <h6 class="mb-0 fw-bold">Ahlinya Retail CS</h6>
-            </div>
-            <button type="button" class="btn-close btn-close-white" id="closeChatbot"></button>
-        </div>
-        <div class="card-body p-3" id="chatbot-body"
-             style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
-            </div>
-        <div class="card-footer p-3">
-            <div id="chatbot-input-container"></div>
-            <div id="chatbot-options" class="d-flex flex-wrap gap-2 mt-2"></div>
-        </div>
-    </div>
-</div>
-
-<a href="#" class="btn btn-success rounded-circle position-fixed bottom-0 end-0 m-4 shadow" id="openChatbot"
-   style="width: 60px; height: 60px; font-size: 1.5rem; z-index: 1050; display: flex; align-items: center; justify-content: center;">
-    <i class="fab fa-whatsapp"></i>
-</a>
-
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
-@endsection
 
 @push('js')
 <script>
@@ -298,220 +251,8 @@
         });
 
         updateSelectedTotal();
-
-        // =============================
-        // CHATBOT LOGIC
-        // =============================
-        const chatbotWidget = document.getElementById('chatbotWidget');
-        const openChatbotBtn = document.getElementById('openChatbot');
-        const closeChatbotBtn = document.getElementById('closeChatbot');
-        const chatbotBody = document.getElementById('chatbot-body');
-        const chatbotInputContainer = document.getElementById('chatbot-input-container');
-        const chatbotOptionsContainer = document.getElementById('chatbot-options');
-
-        // Buka chatbot
-        openChatbotBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            chatbotWidget.style.display = 'block';
-            startChatbot();
-        });
-
-        // Tutup chatbot
-        closeChatbotBtn.addEventListener('click', function() {
-            chatbotWidget.style.display = 'none';
-        });
-
-        // Fungsi mulai chat
-        function startChatbot() {
-            chatbotBody.innerHTML = '';
-            chatbotInputContainer.innerHTML = '';
-            chatbotOptionsContainer.innerHTML = '';
-
-            fetch("{{ route('chatbot.show') }}", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                renderBotMessage(data.reply);
-                renderNameForm();
-            })
-            .catch(error => console.error('Error starting chatbot:', error));
-        }
-
-        function renderNameForm() {
-            chatbotInputContainer.innerHTML = '';
-            chatbotOptionsContainer.innerHTML = '';
-            chatbotInputContainer.style.display = 'block';
-
-            chatbotInputContainer.innerHTML = `
-                <form id="chatbotNameForm">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="chatbot-name-input"
-                               placeholder="Masukkan nama lengkap anda" aria-label="Masukkan nama lengkap anda"
-                               style="border: 1px solid #A34A4A; border-radius: 6px 0 0 6px;">
-                        <button class="btn" type="submit"
-                                style="background-color: #A34A4A; color: white; border-radius: 0 6px 6px 0;">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </form>
-            `;
-
-            document.getElementById('chatbotNameForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const nameInput = document.getElementById('chatbot-name-input').value.trim();
-                if (nameInput) {
-                    renderUserMessage(nameInput);
-                    sendMessage(nameInput);
-                }
-            });
-        }
-
-        function renderChatForm() {
-            chatbotInputContainer.innerHTML = '';
-            chatbotInputContainer.style.display = 'block';
-            chatbotOptionsContainer.style.display = 'none';
-
-            chatbotInputContainer.innerHTML = `
-                <form id="chatbotForm">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="chatbot-input"
-                               placeholder="Ketik pesan..." aria-label="Ketik pesan..."
-                               style="border: 1px solid #A34A4A; border-radius: 6px 0 0 6px;">
-                        <button class="btn" type="submit" id="chatbot-send-btn"
-                                style="background-color: #A34A4A; color: white; border-radius: 0 6px 6px 0;">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </form>
-            `;
-
-            document.getElementById('chatbotForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const userInput = document.getElementById('chatbot-input').value.trim();
-                if (userInput) {
-                    renderUserMessage(userInput);
-                    sendMessage(userInput);
-                }
-            });
-        }
-
-        function renderBotMessage(message) {
-            const botMessageHtml = `
-                <div style="display:flex; margin-bottom:12px;">
-                    <div style="width:30px; height:30px; background-color:#A34A4A; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:8px; flex-shrink:0;">
-                        <i class="fas fa-robot text-white" style="font-size:14px;"></i>
-                    </div>
-                    <div style="
-                        background-color:#f1f0f0;
-                        color:#000;
-                        padding:10px 14px;
-                        border-radius:12px;
-                        max-width:80%;
-                        font-size:14px;
-                        ">
-                        ${message.replace(/\n/g, '<br>')}
-                    </div>
-                </div>
-            `;
-            chatbotBody.innerHTML += botMessageHtml;
-            chatbotBody.scrollTop = chatbotBody.scrollHeight;
-        }
-
-        function renderUserMessage(message) {
-            const userMessageHtml = `
-                <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
-                    <div style="
-                        background-color:#A34A4A;
-                        color:#fff;
-                        padding:10px 14px;
-                        border-radius:12px;
-                        max-width:80%;
-                        font-size:14px;
-                        ">
-                        ${message}
-                    </div>
-                    <div style="width:30px; height:30px; background-color:#A34A4A; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left:8px; flex-shrink:0;">
-                        <i class="fas fa-user text-white" style="font-size:14px;"></i>
-                    </div>
-                </div>
-            `;
-            chatbotBody.innerHTML += userMessageHtml;
-            chatbotBody.scrollTop = chatbotBody.scrollHeight;
-        }
-
-        function renderOptions(options) {
-            let optionsHtml = '';
-            options.forEach(option => {
-                const value = option.id || option;
-                const name = option.name || option;
-                const url = option.url || '';
-
-                const dataAttribute = url ? `data-url="${url}"` : '';
-                const btnClass = value === 'whatsapp_link' ? 'btn-success' : 'btn-outline-primary';
-
-                optionsHtml += `
-                    <button class="btn ${btnClass} chatbot-option-btn"
-                            data-value="${value}" ${dataAttribute}
-                            style="font-size:12px; padding:6px 12px; border-radius:6px;">
-                        ${name}
-                    </button>`;
-            });
-            chatbotOptionsContainer.innerHTML = optionsHtml;
-            chatbotOptionsContainer.style.display = 'flex';
-
-            document.querySelectorAll('.chatbot-option-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const url = this.dataset.url;
-                    if (url) {
-                        window.open(url, '_blank');
-                    } else {
-                        const value = this.dataset.value;
-                        const name = this.textContent.trim();
-                        renderUserMessage(name);
-                        sendMessage(value);
-                    }
-                });
-            });
-        }
-
-        function sendMessage(input) {
-            chatbotInputContainer.style.display = 'none';
-            chatbotOptionsContainer.style.display = 'none';
-
-            fetch("{{ route('chatbot.handle') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ input: input })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                renderBotMessage(data.reply);
-                chatbotOptionsContainer.innerHTML = '';
-                if (data.options && data.options.length > 0) {
-                    renderOptions(data.options);
-                } else {
-                    renderChatForm();
-                }
-            })
-            .catch(error => {
-                console.error('Error handling message:', error);
-                renderBotMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
-                renderChatForm();
-            });
-        }
     });
 </script>
 @endpush
+
+@endsection
