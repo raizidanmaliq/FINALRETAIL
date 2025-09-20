@@ -11,7 +11,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('admin.cms.heroes.index') }}">Banner Utama</a>
                 </li>
-                <li class="breadcrumb-item active">Tambah Banner Utamas</li>
+                <li class="breadcrumb-item active">Tambah Banner Utama</li>
             </ol>
         </div>
     </div>
