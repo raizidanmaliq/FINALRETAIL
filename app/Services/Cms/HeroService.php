@@ -17,7 +17,6 @@ class HeroService {
 
     public function store(UpdateHeroRequest $request) {
         $validatedData = $request->validated();
-
         try {
             $isActive = isset($validatedData['is_active']) && $validatedData['is_active'];
 
@@ -37,8 +36,15 @@ class HeroService {
                 'headline' => $validatedData['headline'] ?? null,
                 'subheadline' => $validatedData['subheadline'] ?? null,
                 'images' => $imagePaths,
-                'is_active' => $isActive
+                'is_active' => $isActive,
             ]);
+
+            // If no hero was active before and the new one wasn't set to active,
+            // we must make sure at least one is active.
+            if (!Hero::where('is_active', true)->exists()) {
+                Hero::orderBy('created_at', 'desc')->first()->update(['is_active' => true]);
+            }
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
@@ -51,8 +57,10 @@ class HeroService {
             $imagePaths = $hero->images;
             if ($request->hasFile('images')) {
                 // Delete old images before uploading new ones
-                foreach ($hero->images as $oldImage) {
-                    $this->imageHelper->deleteImage($oldImage);
+                if ($hero->images) {
+                    foreach ($hero->images as $oldImage) {
+                        $this->imageHelper->deleteImage($oldImage);
+                    }
                 }
 
                 $newImagePaths = [];
@@ -62,6 +70,16 @@ class HeroService {
                 $imagePaths = $newImagePaths;
             }
 
+            // Check if this is the last active hero and the user is trying to deactivate it
+            if ($hero->is_active && isset($validatedData['is_active']) && !$validatedData['is_active']) {
+                $activeHeroesCount = Hero::where('is_active', true)->count();
+                if ($activeHeroesCount === 1) {
+                    // Prevent deactivation and keep it active
+                    $validatedData['is_active'] = true;
+                }
+            }
+
+            // If this hero is set to be active, deactivate all others
             if (isset($validatedData['is_active']) && $validatedData['is_active']) {
                 Hero::where('is_active', true)
                     ->where('id', '!=', $hero->id)
@@ -71,6 +89,7 @@ class HeroService {
             $hero->update(array_merge($validatedData, [
                 'images' => $imagePaths,
             ]));
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
@@ -78,13 +97,23 @@ class HeroService {
 
     public function destroy(Hero $hero) {
         try {
+            // Check if the hero being deleted is the last active one
+            if ($hero->is_active) {
+                $activeHeroesCount = Hero::where('is_active', true)->count();
+                if ($activeHeroesCount === 1) {
+                    throw new \Exception('Tidak bisa menghapus hero aktif terakhir. Silakan aktifkan hero lain terlebih dahulu.');
+                }
+            }
+
             // Delete all images associated with this hero entry
             if ($hero->images) {
                 foreach ($hero->images as $image) {
                     $this->imageHelper->deleteImage($image);
                 }
             }
+
             $hero->delete();
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
@@ -92,7 +121,6 @@ class HeroService {
 
     public function data(object $hero) {
         $array = $hero->get(['id', 'headline', 'subheadline', 'images', 'is_active']);
-
         $data = [];
         $no = 0;
 

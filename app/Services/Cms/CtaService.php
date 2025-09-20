@@ -22,15 +22,23 @@ class CtaService
         $validatedData = $request->validated();
 
         try {
+            $isActive = isset($validatedData['is_active']) && $validatedData['is_active'];
+
             // If the new CTA is set to active, deactivate any other active CTA
-            if (isset($validatedData['is_active']) && $validatedData['is_active']) {
+            if ($isActive) {
                 Cta::where('is_active', true)->update(['is_active' => false]);
             }
 
             // Create the new CTA
-            Cta::create(array_merge($validatedData, [
+            $cta = Cta::create(array_merge($validatedData, [
                 'image' => $this->imageHelper->uploadImage($request, 'image'),
             ]));
+
+            // Ensure at least one CTA is active after creation
+            if (!Cta::where('is_active', true)->exists()) {
+                $cta->update(['is_active' => true]);
+            }
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
@@ -45,15 +53,27 @@ class CtaService
                 $this->imageHelper->updateImage($request, 'image', $cta->image) :
                 $cta->image;
 
-            // If the CTA is being updated to active, and it's currently inactive, deactivate any other active CTA
-            if (isset($validatedData['is_active']) && $validatedData['is_active'] && !$cta->is_active) {
-                Cta::where('is_active', true)->update(['is_active' => false]);
+            // Check if this is the last active CTA and the user is trying to deactivate it
+            if ($cta->is_active && isset($validatedData['is_active']) && !$validatedData['is_active']) {
+                $activeCtaCount = Cta::where('is_active', true)->count();
+                if ($activeCtaCount === 1) {
+                    // Prevent deactivation and keep it active
+                    $validatedData['is_active'] = true;
+                }
+            }
+
+            // If the CTA is being updated to active, deactivate any other active CTA
+            if (isset($validatedData['is_active']) && $validatedData['is_active']) {
+                 Cta::where('is_active', true)
+                    ->where('id', '!=', $cta->id)
+                    ->update(['is_active' => false]);
             }
 
             // Update the CTA
             $cta->update(array_merge($validatedData, [
                 'image' => $imageData,
             ]));
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
@@ -62,6 +82,14 @@ class CtaService
     public function destroy(Cta $cta)
     {
         try {
+            // Check if the CTA to be deleted is the last active one
+            if ($cta->is_active) {
+                $activeCtaCount = Cta::where('is_active', true)->count();
+                if ($activeCtaCount === 1) {
+                    throw new \Exception('Tidak bisa menghapus CTA aktif terakhir. Silakan aktifkan CTA lain terlebih dahulu.');
+                }
+            }
+
             $this->imageHelper->deleteImage($cta->image);
             $cta->delete();
         } catch (\Error $e) {

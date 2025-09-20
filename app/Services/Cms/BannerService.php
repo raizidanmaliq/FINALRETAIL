@@ -17,18 +17,17 @@ class BannerService {
 
     public function store(UpdateBannerRequest $request) {
         $validatedData = $request->validated();
-
         try {
             // Check if the new banner is set to be active
             if (isset($validatedData['is_active']) && $validatedData['is_active']) {
-                // Count the number of active banners
                 $activeBannersCount = Banner::where('is_active', true)->count();
 
                 // If the count is already 3 or more, deactivate the oldest one
                 if ($activeBannersCount >= 3) {
                     $oldestActiveBanner = Banner::where('is_active', true)
-                                                ->orderBy('created_at', 'asc')
-                                                ->first();
+                        ->orderBy('created_at', 'asc')
+                        ->first();
+
                     if ($oldestActiveBanner) {
                         $oldestActiveBanner->update(['is_active' => false]);
                     }
@@ -39,13 +38,13 @@ class BannerService {
             Banner::create(array_merge($validatedData, [
                 'image' => $this->imageHelper->uploadImage($request, 'image'),
             ]));
+
         } catch (\Error $e) {
             ErrorHandling::environmentErrorHandling($e->getMessage());
         }
     }
 
-    public function update(UpdateBannerRequest $request, Banner $banner)
-    {
+    public function update(UpdateBannerRequest $request, Banner $banner) {
         $validatedData = $request->validated();
 
         try {
@@ -53,18 +52,29 @@ class BannerService {
                 $this->imageHelper->updateImage($request, 'image', $banner->image) :
                 $banner->image;
 
-            // Check if the banner is being updated to be active and is currently inactive
+            // Check if the banner is being updated to be inactive and if it's the last active one
+            if (isset($validatedData['is_active']) && !$validatedData['is_active']) {
+                $activeBannersCount = Banner::where('is_active', true)->count();
+                // If there's only one active banner (the current one) and it's being deactivated, prevent the action
+                if ($activeBannersCount === 1 && $banner->is_active) {
+                    // Revert the 'is_active' status to true to keep it active
+                    $validatedData['is_active'] = true;
+                }
+            }
+
+            // If the banner is being updated to be active and is currently inactive
             if (isset($validatedData['is_active']) && $validatedData['is_active'] && !$banner->is_active) {
                 // Count active banners, excluding the current one
                 $activeBannersCount = Banner::where('is_active', true)
-                                            ->where('id', '!=', $banner->id)
-                                            ->count();
+                    ->where('id', '!=', $banner->id)
+                    ->count();
 
                 // If the count is already 3, deactivate the oldest one
                 if ($activeBannersCount >= 3) {
                     $oldestActiveBanner = Banner::where('is_active', true)
-                                                ->orderBy('updated_at', 'asc')
-                                                ->first();
+                        ->orderBy('updated_at', 'asc')
+                        ->first();
+
                     if ($oldestActiveBanner) {
                         $oldestActiveBanner->update(['is_active' => false]);
                     }
@@ -82,6 +92,15 @@ class BannerService {
 
     public function destroy(Banner $banner) {
         try {
+            // Get the count of active banners before deletion
+            $activeBannersCount = Banner::where('is_active', true)->count();
+
+            // If the banner to be deleted is active and it's the last active one
+            if ($banner->is_active && $activeBannersCount === 1) {
+                // Return an error or throw an exception since you can't delete the last active banner
+                throw new \Exception('Tidak bisa menghapus banner aktif terakhir.');
+            }
+
             $this->imageHelper->deleteImage($banner->image);
             $banner->delete();
         } catch (\Error $e) {
@@ -89,9 +108,8 @@ class BannerService {
         }
     }
 
-    public function data(object $banner)
-    {
-        // ... (data method remains unchanged as it only formats the output)
+    public function data(object $banner) {
+        // This method remains unchanged as it only formats the output
         $array = $banner->get(['id', 'title', 'image', 'is_active']);
 
         $data = [];
